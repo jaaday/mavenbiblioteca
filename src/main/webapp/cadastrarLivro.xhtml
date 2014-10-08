@@ -10,7 +10,7 @@
     </h:head>
     <ui:decorate template="/tema/padrao.xhtml">
         <ui:define  name="centro">
-            <h:form>
+            <h:form id="form3">
                 <p:panel id="cadastrarLivro" header="Cadastrar Livro">
                     <p:panel id="dadoslivros" header="Dados do Livro">
                         <h:inputHidden value="#{livroMB.livro.id}"/>
@@ -18,7 +18,11 @@
                             Titulo: <p:inputText value="#{livroMB.livro.titulo}"/>
                             ISBN: <p:inputText value="#{livroMB.livro.isbn}"/>
                             Área de Conhecimento: <p:inputText value="#{livroMB.livro.area_conhecimento}"/>
-                            Categoria: <p:inputText value="#{livroMB.livro.categoria}"/>
+                            Categoria: <p:selectOneMenu id="prioridade" value="#{livroMB.livro.categoria}" effect="fade">
+                                <f:selectItem itemLabel= "Livro" itemValue="Livro"/>
+                                <f:selectItem itemLabel= "Artigo" itemValue="Artigo"/>
+                                <f:selectItem itemLabel= "TCC/Monografia" itemValue="TCC/Monografia"/>
+                            </p:selectOneMenu>
                             Autor: <p:inputText value="#{livroMB.livro.autor}"/>
                             Ano de Lançamento: <p:inputMask mask="9999" value="#{livroMB.livro.ano_lancamento}"/>
                             <h:outputLabel for="basic" value="Quantidade de Exemplar: " />
@@ -29,9 +33,14 @@
                             </p:selectOneMenu>
                         </p:panelGrid>
                     </p:panel>
-                    <p:commandButton value="Salvar" ajax="false" oncomplete="PF('dialog').show()" update="tabelaLivros" action="#{livroMB.novoLivro()}"/>
+                    <div align="center">
+                        <p:commandButton value="Salvar" oncomplete="PF('dialog').show()" update="tabelaLivros" action="#{livroMB.novoLivro()}"/>
+                        <p:commandButton value="Alterar" oncomplete="PF('dialog').show()" update="tabelaLivros" action="#{livroMB.alterarLivro()}"/>
+                        <p:commandButton value="Excluir" oncomplete="PF('dialog').show()" update="tabelaLivros" action="#{livroMB.excluirLivro()}"/>
+                    </div>
                 </p:panel>
-                <p:dataTable id="tabelaLivros" value="#{livroMB.livros}" emptyMessage="Não há registros" var="livro" paginator="true" rows="5"> 
+                <p:dataTable id="tabelaLivros" value="#{livroMB.livros}" emptyMessage="Não há registros" var="livro" paginator="true" rows="5"
+                             selectionMode="single" rowKey="#{livro.id}"> 
                     <p:column headerText="Id"> 
                         <h:outputText value="#{livro.id}"/> 
                     </p:column> 
@@ -46,7 +55,8 @@
                     </p:column> 
                     <p:column headerText="Área de Conhecimento" filterBy="#{livro.area_conhecimento}" filterMatchMode="contains"> 
                         <h:outputText value="#{livro.area_conhecimento}"/> 
-                    </p:column> 
+                    </p:column>
+                    <p:ajax event="rowSelect" update=":form3" listener="#{livroMB.onRowSelect}"/>
                 </p:dataTable> 
             </h:form>
         </ui:define>

@@ -12,6 +12,7 @@ import javax.faces.application.NavigationHandler;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.RequestScoped;
 import javax.faces.context.FacesContext;
+import org.primefaces.event.SelectEvent;
 
 @ManagedBean
 @RequestScoped
@@ -21,16 +22,18 @@ public class UsuarioMB {
     private Endereco endereco;
     private String prioridade;
     private List usuarios;
+    private Boolean but;
     private final LogicaUsusario logicaU;
-
+    
     public UsuarioMB() {
         usuario = new Usuario();
         endereco = new Endereco();
         logicaU = new LogicaUsusario();
         usuarios = logicaU.listarUsuario();
+        but = false;
     }
-
-    public void cadastrarUsuario() {
+    
+    public void cadastrarUsuario(){
         usuario.setCpf(logicaU.removerMascara(usuario.getCpf()));
         endereco.setCep(logicaU.removerMascara(endereco.getCep()));
         usuario.setEndereco(endereco);
@@ -46,48 +49,55 @@ public class UsuarioMB {
             Logger.getLogger(UsuarioMB.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-
-    public void pesquisarUsuario() {
+    
+    public void pesquisarUsuario(){
         usuario.setCpf(logicaU.removerMascara(usuario.getCpf()));
         usuario = logicaU.pesquisarUsuarioCPF(usuario);
-
-        if (usuario == null) {
+        
+        if(usuario==null){
             try {
-                FacesContext.getCurrentInstance().getExternalContext().redirect("index.xhtml");
+            FacesContext.getCurrentInstance().getExternalContext().redirect("index.xhtml");
             } catch (IOException ex) {
                 Logger.getLogger(UsuarioMB.class.getName()).log(Level.SEVERE, null, ex);
             }
-        } else {
+        }else{
             endereco = usuario.getEndereco();
             prioridade = logicaU.desconverterPrioridade(usuario.getPrioridade());
 
-            NavigationHandler navigationHandler = FacesContext.getCurrentInstance().getApplication().getNavigationHandler();
+            NavigationHandler navigationHandler = FacesContext.getCurrentInstance().getApplication().getNavigationHandler();  
             navigationHandler.handleNavigation(FacesContext.getCurrentInstance(), null, "mostrarUsuario");
         }
     }
-
-    public void alterarUsuario() {
+    
+    public void alterarUsuario(){
         usuario.setCpf(logicaU.removerMascara(usuario.getCpf()));
         endereco.setCep(logicaU.removerMascara(endereco.getCep()));
         usuario.setEndereco(endereco);
         usuario.setPrioridade(logicaU.convertPrioridade(prioridade));
         logicaU.alterarUsuario(usuario);
-
+        but = false;
         try {
-            FacesContext.getCurrentInstance().getExternalContext().redirect("index.xhtml");
+            FacesContext.getCurrentInstance().getExternalContext().redirect("cadastrarUsuario.xhtml");
         } catch (IOException ex) {
             Logger.getLogger(UsuarioMB.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-
-    public void excluirUsuario() {
+    
+    public void excluirUsuario(){
         usuario.setEndereco(endereco);
         logicaU.excluirUsuario(usuario);
+        but =false;
         try {
-            FacesContext.getCurrentInstance().getExternalContext().redirect("index.xhtml");
+            FacesContext.getCurrentInstance().getExternalContext().redirect("cadastrarUsuario.xhtml");
         } catch (IOException ex) {
             Logger.getLogger(UsuarioMB.class.getName()).log(Level.SEVERE, null, ex);
         }
+    }
+    
+    public void onRowSelect(SelectEvent event) {  
+        this.usuario = (Usuario) event.getObject();
+        this.endereco = usuario.getEndereco();
+        but = true;
     }
 
     /**
@@ -147,4 +157,18 @@ public class UsuarioMB {
         this.usuarios = usuarios;
     }
 
+    /**
+     * @return the but
+     */
+    public Boolean getBut() {
+        return but;
+    }
+
+    /**
+     * @param but the but to set
+     */
+    public void setBut(Boolean but) {
+        this.but = but;
+    }
+    
 }
