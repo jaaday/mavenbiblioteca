@@ -1,0 +1,47 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+    <h:head>
+        <title>Facelet Title</title>
+    </h:head>
+    <h:body>
+        <h:form>
+            <p:panel id="mostrarCliente" header="Exibir Cliente">
+                <p:panel id="pessoais2" header="Dados Pessoais" >
+                    <h:inputHidden value="${usuarioMB.usuario.id}"/>
+                    <p:panelGrid  columns="2" styleClass="semBorda"> 
+                        Nome: <p:inputText value="${usuarioMB.usuario.nome}"/>
+                        CPF: <p:inputMask mask="999.999.999-99" value="${usuarioMB.usuario.cpf}"/> 
+                        RG: <p:inputText value="${usuarioMB.usuario.rg}"/> 
+                        Email: <p:inputText value="${usuarioMB.usuario.email}"/>
+                        Prioridade: <p:selectOneMenu id="prioridade" value="#{usuarioMB.prioridade}" effect="fade">
+                            <f:selectItem itemLabel= "Cliente" itemValue="Cliente"/>
+                            <f:selectItem itemLabel= "Funcionario" itemValue="Funcionario"/>
+                            <f:selectItem itemLabel= "Administrador" itemValue="Administrador"/>
+                        </p:selectOneMenu>
+                    </p:panelGrid>
+                </p:panel>
+                 <p:panel id="endereco2" header="Endereço" >
+                     <h:inputHidden value="#{usuarioMB.endereco.id}"/>
+                     <p:panelGrid  columns="2" styleClass="semBorda">
+                         Logradouro: <p:inputText value="#{usuarioMB.endereco.logradouro}"/> 
+                         Número: <p:inputText value="#{usuarioMB.endereco.numero}"/>
+                         Cidade: <p:inputText value="#{usuarioMB.endereco.cidade}"/> 
+                         CEP: <p:inputMask mask="99.999-999" value="#{usuarioMB.endereco.cep}"/>
+                         UF: <p:inputText value="#{usuarioMB.endereco.uf}"/> 
+                    </p:panelGrid>
+                 </p:panel>
+                <p:commandButton value="Alterar" icon="ui-icon-pencil" ajax="false" oncomplete="PF('dialog').show()" update="display" action="#{usuarioMB.alterarUsuario()}"/>
+                <p:commandButton value="Excluir" icon="ui-icon-trash" ajax="false" oncomplete="PF('dialog').show()" update="display" action="#{usuarioMB.excluirUsuario()}"/>
+            </p:panel>
+        </h:form>
+        <br/>
+        <h:form>
+            <p:commandButton value="Voltar" action="index.xhtml"/>
+        </h:form>
+    </h:body>
+</html>
+

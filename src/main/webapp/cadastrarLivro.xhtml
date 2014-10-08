@@ -1,0 +1,55 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+    <h:head>
+        <title>Facelet Title</title>
+    </h:head>
+    <ui:decorate template="/tema/padrao.xhtml">
+        <ui:define  name="centro">
+            <h:form>
+                <p:panel id="cadastrarLivro" header="Cadastrar Livro">
+                    <p:panel id="dadoslivros" header="Dados do Livro">
+                        <h:inputHidden value="#{livroMB.livro.id}"/>
+                        <p:panelGrid  columns="2" styleClass="semBorda">
+                            Titulo: <p:inputText value="#{livroMB.livro.titulo}"/>
+                            ISBN: <p:inputText value="#{livroMB.livro.isbn}"/>
+                            Área de Conhecimento: <p:inputText value="#{livroMB.livro.area_conhecimento}"/>
+                            Categoria: <p:inputText value="#{livroMB.livro.categoria}"/>
+                            Autor: <p:inputText value="#{livroMB.livro.autor}"/>
+                            Ano de Lançamento: <p:inputMask mask="9999" value="#{livroMB.livro.ano_lancamento}"/>
+                            <h:outputLabel for="basic" value="Quantidade de Exemplar: " />
+                            <p:spinner id="basic" value="#{livroMB.numero}" min="1"/>
+                            <p:outputLabel for="editora" value="Editora: " />
+                            <p:selectOneMenu id="editora" value="#{livroMB.editora}" effect="fade" converter="editora">
+                                <f:selectItems value="#{livroMB.editoras}" var="editora" itemLabel="#{editora.nome}" itemValue="#{editora}" />
+                            </p:selectOneMenu>
+                        </p:panelGrid>
+                    </p:panel>
+                    <p:commandButton value="Salvar" ajax="false" oncomplete="PF('dialog').show()" update="tabelaLivros" action="#{livroMB.novoLivro()}"/>
+                </p:panel>
+                <p:dataTable id="tabelaLivros" value="#{livroMB.livros}" emptyMessage="Não há registros" var="livro" paginator="true" rows="5"> 
+                    <p:column headerText="Id"> 
+                        <h:outputText value="#{livro.id}"/> 
+                    </p:column> 
+                    <p:column headerText="ISBN" filterBy="#{livro.isbn}" filterMatchMode="contains"> 
+                        <h:outputText value="#{livro.isbn}"/> 
+                    </p:column> 
+                    <p:column headerText="Titulo" filterBy="#{livro.titulo}" filterMatchMode="contains"> 
+                        <h:outputText value="#{livro.titulo}"/> 
+                    </p:column> 
+                    <p:column headerText="Autor" filterBy="#{livro.autor}" filterMatchMode="contains"> 
+                        <h:outputText value="#{livro.autor}"/> 
+                    </p:column> 
+                    <p:column headerText="Área de Conhecimento" filterBy="#{livro.area_conhecimento}" filterMatchMode="contains"> 
+                        <h:outputText value="#{livro.area_conhecimento}"/> 
+                    </p:column> 
+                </p:dataTable> 
+            </h:form>
+        </ui:define>
+    </ui:decorate>
+</html>
+

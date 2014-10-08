@@ -1,0 +1,50 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+
+    <ui:decorate template="/tema/padrao.xhtml">
+        <ui:define name="centro">
+            
+            <h:form>
+                <p:panel id="cadastroLivro" header="Cadastrar Livro">
+                    <div align="center">
+                        <p:panelGrid columns="2" class="semBorda">
+                            <p:panel id="editora" header="Dados da Editora">
+                                <h:inputHidden value="#{editoraMB.editora.id}"/>
+                                <p:panelGrid  columns="2" styleClass="semBorda"> 
+                                    Nome: <p:inputText value="#{editoraMB.editora.nome}"/>
+                                </p:panelGrid>
+                            </p:panel>
+                            <p:panel id="endereco" header="Endereço" >
+                                <h:inputHidden value="#{editoraMB.endereco.id}"/>
+                                <p:panelGrid  columns="2" styleClass="semBorda">
+                                    Logradouro: <p:inputText value="#{editoraMB.endereco.logradouro}"/> 
+                                    Número: <p:inputText value="#{editoraMB.endereco.numero}"/>
+                                    Cidade: <p:inputText value="#{editoraMB.endereco.cidade}"/> 
+                                    CEP: <p:inputMask mask="99.999-999" value="#{editoraMB.endereco.cep}"/>
+                                    UF: <p:inputText value="#{editoraMB.endereco.uf}"/> 
+                                </p:panelGrid>
+                            </p:panel>
+                        </p:panelGrid>
+                        <p:commandButton value="Salvar" ajax="false" oncomplete="PF('dialog').show()" update="tabelaEditoras" action="#{editoraMB.novaEditora()}"/>
+                    </div>
+                </p:panel>   
+                <p:dataTable id="tabelaEditoras" value="#{editoraMB.editoras}" emptyMessage="Não há registros" var="editora" paginator="true" rows="5"> 
+                    <p:column headerText="Nome" filterBy="#{editora.nome}" filterMatchMode="contains"> 
+                        <h:outputText value="#{editora.nome}"/> 
+                    </p:column> 
+                    <p:column headerText="Cidade" filterBy="#{editora.endereco.cidade}" filterMatchMode="contains"> 
+                        <h:outputText value="#{editora.endereco.cidade}"/> 
+                    </p:column> 
+                    <p:column headerText="Cep" filterBy="#{editora.endereco.cep}" filterMatchMode="contains"> 
+                        <h:outputText value="#{editora.endereco.cep}"/> 
+                    </p:column> 
+                </p:dataTable> 
+            </h:form>
+        </ui:define>
+    </ui:decorate>
+</html>
+

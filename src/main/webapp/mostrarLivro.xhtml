@@ -1,0 +1,38 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+    <h:head>
+        <title>Facelet Title</title>
+    </h:head>
+    <h:body>
+        <h:form>
+            <p:panel id="cadastrarLivro" header="Cadastrar Livro">
+                <p:panel id="dadoslivros" header="Dados do Livro">
+                    <h:inputHidden value="#{livroMB.livro.id}"/>
+                    <p:panelGrid  columns="2" styleClass="semBorda">
+                        Titulo: <p:inputText value="#{livroMB.livro.titulo}"/>
+                        ISBN: <p:inputText value="#{livroMB.livro.isbn}"/>
+                        Área de Conhecimento: <p:inputText value="#{livroMB.livro.area_conhecimento}"/>
+                        Categoria: <p:inputText value="#{livroMB.livro.categoria}"/>
+                        Autor: <p:inputText value="#{livroMB.livro.autor}"/>
+                        Ano de Lançamento: <p:inputMask mask="9999" value="#{livroMB.livro.ano_lancamento}"/>
+                        <p:outputLabel for="editora" value="Editora: " />
+                        <p:selectOneMenu id="editora" value="#{livroMB.editora}" effect="fade" converter="editora">
+                            <f:selectItems value="#{livroMB.editoras}" var="editora" itemLabel="#{editora.nome}" itemValue="#{editora}" />
+                        </p:selectOneMenu>
+                    </p:panelGrid>
+                </p:panel>
+                <p:commandButton value="Alterar" icon="ui-icon-pencil" ajax="false" oncomplete="PF('dialog').show()" update="display" action="#{livroMB.alterarLivro()}"/>
+                <p:commandButton value="Excluir" icon="ui-icon-trash" ajax="false" oncomplete="PF('dialog').show()" update="display" action="#{livroMB.excluirLivro()}"/>
+            </p:panel>
+        </h:form>
+        <br/>
+        <h:form>
+            <p:commandButton value="Voltar" action="index.xhtml"/>
+        </h:form>
+    </h:body>
+</html>
+

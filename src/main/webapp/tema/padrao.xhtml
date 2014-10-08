@@ -1,0 +1,50 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui">
+
+    <f:view contentType="text/html">
+        <h:head>
+            <f:facet name="first">
+                <meta content='text/html; charset=UTF-8' http-equiv="Content-Type"/>
+                <title></title>
+            </f:facet>
+            <style type="text/css">
+                body {background-color: white; font-size: 12px}
+                .semBorda tr, .semBorda td {  
+                    border: none !important;  
+                }  
+            </style> 
+        </h:head>
+
+        <h:body>
+
+            <p:layout fullPage="true">
+                <p:layoutUnit position="north" size="100" resizable="true" closable="true" collapsible="true">
+                </p:layoutUnit>
+                <!--<p:layoutUnit position="south" size="100" closable="true" collapsible="true">
+                </p:layoutUnit>  -->
+                <p:layoutUnit position="west" size="200" collapsible="false">
+                    <h:form>
+                        <p:menu>
+                            <p:submenu label="Menu Principal">
+                                <p:menuitem value="Cadastrar Usuário" url="faces/cadastrarUsuario.xhtml" />
+                                <p:menuitem value="Cadastrar Livro" url="faces/cadastrarLivro.xhtml" />
+                                <p:menuitem value="Cadastrar Editora" url="/faces/cadastrarEditora.xhtml" />
+                            </p:submenu>
+                        </p:menu>
+                    </h:form>
+                </p:layoutUnit>
+
+                <p:layoutUnit position="center">
+                    <ui:insert name="centro">
+                        
+                    </ui:insert>
+                </p:layoutUnit>
+            </p:layout>
+        </h:body>
+    </f:view>
+</html>
+
