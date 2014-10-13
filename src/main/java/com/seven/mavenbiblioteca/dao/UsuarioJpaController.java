@@ -25,35 +25,36 @@ public class UsuarioJpaController implements Serializable {
     }
 
     public void create(Usuario usuario) {
-        if (usuario.getEndereco() == null) {
+        if(usuario.getEndereco() == null){
             usuario.setEndereco(new Endereco());
         }
         EntityManager em = null;
         try {
             em = getEntityManager();
             em.getTransaction().begin();
-
+            
             Endereco endereco = usuario.getEndereco();
             em.persist(endereco);
-            em.persist(usuario);
+            em.persist(usuario); 
             em.getTransaction().commit();
-
+            
         } finally {
             if (em != null) {
                 em.close();
             }
-
+            
         }
     }
-
-    public Usuario pesquisarUsuarioCPF(Usuario u) {
+    
+    public Usuario pesquisarUsuarioCPF (Usuario u){
         EntityManager em = getEntityManager();
-        try {
-            TypedQuery<Usuario> query = em.createQuery("select u from Usuario u where u.cpf=:cpf", Usuario.class);
+        try{                                
+            TypedQuery<Usuario> query = em.createQuery("select u from Usuario u where u.cpf=:cpf",Usuario.class);
             query.setParameter("cpf", u.getCpf());
             return query.getSingleResult();
-
-        } catch (Exception e) {
+            
+        }catch (Exception e){
+            e.printStackTrace();
             return null;
         }
     }
@@ -147,5 +148,5 @@ public class UsuarioJpaController implements Serializable {
             em.close();
         }
     }
-
+    
 }

@@ -11,16 +11,17 @@
     <ui:decorate template="/tema/padrao.xhtml">
         <ui:define  name="centro">
             <h:form id="form1">
+                <p:growl id="growl1" showDetail="true" sticky="false" life="3000"/>
                 <p:panel id="cadastrarCliente" header="Cadastrar Usuário">
                     <div align="center" >
                         <p:panelGrid columns="2" class="semBorda">
                             <p:panel id="pessoais" header="Dados Pessoais" >
                                 <h:inputHidden value="#{usuarioMB.usuario.id}"/>
                                 <p:panelGrid  columns="2" styleClass="semBorda"> 
-                                    Nome: <p:inputText value="#{usuarioMB.usuario.nome}"/>
-                                    CPF: <p:inputMask mask="999.999.999-99" value="#{usuarioMB.usuario.cpf}"/> 
-                                    RG: <p:inputText value="#{usuarioMB.usuario.rg}"/> 
-                                    Email: <p:inputText value="#{usuarioMB.usuario.email}"/>
+                                    Nome: <p:inputText value="#{usuarioMB.usuario.nome}" required="true" requiredMessage="Campo Nome Obrigatório"/>
+                                    CPF: <p:inputMask mask="999.999.999-99" value="#{usuarioMB.usuario.cpf}" required="true"  requiredMessage="Campo CPF Obrigatório"/> 
+                                    RG: <p:inputText value="#{usuarioMB.usuario.rg}" required="true" requiredMessage="Campo RG Obrigatório"/> 
+                                    Email: <p:inputText value="#{usuarioMB.usuario.email}" required="true" requiredMessage="Campo Email Obrigatório"/>
                                     Prioridade: <p:selectOneMenu id="prioridade" value="#{usuarioMB.prioridade}" effect="fade">
                                         <f:selectItem itemLabel= "Cliente" itemValue="Cliente"/>
                                         <f:selectItem itemLabel= "Funcionario" itemValue="Funcionario"/>
@@ -31,10 +32,10 @@
                             <p:panel id="endereco" header="Endereço" >
                                 <h:inputHidden value="#{usuarioMB.endereco.id}"/>
                                 <p:panelGrid  columns="2" styleClass="semBorda">
-                                    Logradouro: <p:inputText value="#{usuarioMB.endereco.logradouro}"/> 
-                                    Número: <p:inputText value="#{usuarioMB.endereco.numero}"/>
-                                    Cidade: <p:inputText value="#{usuarioMB.endereco.cidade}"/> 
-                                    CEP: <p:inputMask mask="99.999-999" value="#{usuarioMB.endereco.cep}"/>
+                                    Logradouro: <p:inputText value="#{usuarioMB.endereco.logradouro}" required="true" requiredMessage="Campo Logradouro Obrigatório"/> 
+                                    Número: <p:inputText value="#{usuarioMB.endereco.numero}" required="true" requiredMessage="Campo Número Obrigatório"/>
+                                    Cidade: <p:inputText value="#{usuarioMB.endereco.cidade}" required="true" requiredMessage="Campo Cidade Obrigatório"/> 
+                                    CEP: <p:inputMask mask="99.999-999" value="#{usuarioMB.endereco.cep}" required="true" requiredMessage="Campo CEP Obrigatório"/>
                                     UF: <p:selectOneMenu id="ufUsuario" value="#{usuarioMB.endereco.uf}" effect="fade">
                                         <f:selectItem itemLabel= "AC" itemValue="AC"/>
                                         <f:selectItem itemLabel= "AL" itemValue="AL"/>
@@ -68,9 +69,9 @@
                             </p:panel>
                         </p:panelGrid>
 
-                        <p:commandButton value="Salvar" rendered="#{!usuarioMB.but}" oncomplete="PF('dialog').show()" update="tabelaUsuarios" action="#{usuarioMB.cadastrarUsuario()}"/>
-                        <p:commandButton value="Alterar" ajax="false" rendered="#{usuarioMB.but}" oncomplete="PF('dialog').show()" update="tabelaUsuarios" action="#{usuarioMB.alterarUsuario()}"/>
-                        <p:commandButton value="Excluir" ajax="false" rendered="#{usuarioMB.but}" oncomplete="PF('dialog').show()" update="tabelaUsuarios" action="#{usuarioMB.excluirUsuario()}"/>
+                        <p:commandButton value="Salvar" ajax="false"  oncomplete="PF('dialog').show()" update=":form1,:tabelaUsuarios" action="#{usuarioMB.cadastrarUsuario()}"/>
+                        <p:commandButton value="Alterar" ajax="false" oncomplete="PF('dialog').show()" update="form1,:tabelaUsuarios" action="#{usuarioMB.alterarUsuario()}"/>
+                        <p:commandButton value="Excluir" ajax="false" oncomplete="PF('dialog').show()" update="form1,:tabelaUsuarios" action="#{usuarioMB.excluirUsuario()}"/>
                     </div>
                 </p:panel>
                 <p:dataTable id="tabelaUsuarios" value="#{usuarioMB.usuarios}" emptyMessage="Não há registros" var="usuario" paginator="true" rows="5"

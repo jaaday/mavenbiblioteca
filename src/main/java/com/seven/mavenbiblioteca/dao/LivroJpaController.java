@@ -36,15 +36,27 @@ public class LivroJpaController implements Serializable {
             }
         }
     }
-
-    public Livro pesquisarLivroID(Long i) {
+    
+    public List<Livro> listarLivrosDisponiveis(){
         EntityManager em = getEntityManager();
-        try {
-            TypedQuery<Livro> query = em.createQuery("select u from Livro u where u.id=:cpf", Livro.class);
+        try{
+            TypedQuery<Livro> query = (TypedQuery<Livro>) em.createNativeQuery("select * from LIVRO except select i.* from LIVRO i, EMPRESTIMO e where i.ID = e.LIVRO_ID and e.DATA_DEVOLUCAO = '1969-12-31'",Livro.class);
+            return query.getResultList();
+        }catch (Exception e){
+            e.printStackTrace();
+            return null;
+        }
+    }
+    
+    public Livro pesquisarLivroID(Long i){
+       EntityManager em = getEntityManager();
+        try{                                
+            TypedQuery<Livro> query = em.createQuery("select u from Livro u where u.id=:cpf",Livro.class);
             query.setParameter("cpf", i);
             return query.getSingleResult();
-
-        } catch (Exception e) {
+            
+        }catch (Exception e){
+            e.printStackTrace();
             return null;
         }
     }
@@ -138,5 +150,5 @@ public class LivroJpaController implements Serializable {
             em.close();
         }
     }
-
+    
 }

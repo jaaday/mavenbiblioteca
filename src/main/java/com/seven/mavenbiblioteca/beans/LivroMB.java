@@ -12,6 +12,7 @@ import javax.faces.context.FacesContext;
 import com.seven.mavenbiblioteca.logica.LogicaLivro;
 import com.seven.mavenbiblioteca.modelo.Editora;
 import com.seven.mavenbiblioteca.modelo.Livro;
+import javax.faces.application.FacesMessage;
 import org.primefaces.event.SelectEvent;
 
 @ManagedBean
@@ -24,47 +25,50 @@ public class LivroMB {
     private Editora editora;
     private int numero;
     private Long id;
-    
+    private final FacesContext context;
+
     public LivroMB() {
         editora = new Editora();
         logicaLivro = new LogicaLivro();
         livro = new Livro();
         livros = logicaLivro.listarLivros();
+        context = FacesContext.getCurrentInstance();
     }
-    
-    public void novoLivro(){
-        livro.setEditora(editora);
-        for(int i = 0; i < numero; i++){
-            livro.setId(null);
-            logicaLivro.novoLivro(livro);
-        }
-        livro = new Livro();
-        editora = new Editora();
-        livros = logicaLivro.listarLivros();
-        try {
-            FacesContext.getCurrentInstance().getExternalContext().redirect("cadastrarLivro.xhtml");
-        } catch (IOException ex) {
-            Logger.getLogger(LivroMB.class.getName()).log(Level.SEVERE, null, ex);
+
+    public void novoLivro() {
+        if (editora!=null) {
+            livro.setEditora(editora);
+            for (int i = 0; i < numero; i++) {
+                livro.setId(null);
+                logicaLivro.novoLivro(livro);
+            }
+            livro = new Livro();
+            editora = new Editora();
+            livros = logicaLivro.listarLivros();
+            
+            context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Sucesso", "Livro cadastrado!"));
+        }else{
+            context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Erro", "Cadastrar primeiro uma Editora"));
         }
     }
-    
-    public void pesquisarLivro(){
+
+    public void pesquisarLivro() {
         livro = logicaLivro.pesqLivroID(id);
-        
-        if(livro ==  null){
+
+        if (livro == null) {
             try {
                 FacesContext.getCurrentInstance().getExternalContext().redirect("index.xhtml");
             } catch (IOException ex) {
                 Logger.getLogger(LivroMB.class.getName()).log(Level.SEVERE, null, ex);
-            }  
-        }else{
+            }
+        } else {
             editora = livro.getEditora();
-            NavigationHandler navigationHandler = FacesContext.getCurrentInstance().getApplication().getNavigationHandler();  
+            NavigationHandler navigationHandler = FacesContext.getCurrentInstance().getApplication().getNavigationHandler();
             navigationHandler.handleNavigation(FacesContext.getCurrentInstance(), null, "mostrarLivro");
         }
     }
-    
-    public void alterarLivro(){
+
+    public void alterarLivro() {
         livro.setEditora(editora);
         logicaLivro.alterarLivro(livro);
         try {
@@ -73,8 +77,8 @@ public class LivroMB {
             Logger.getLogger(LivroMB.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-    
-    public void excluirLivro(){
+
+    public void excluirLivro() {
         livro.setEditora(editora);
         logicaLivro.excluirLivor(livro);
         try {
@@ -83,12 +87,12 @@ public class LivroMB {
             Logger.getLogger(LivroMB.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-    
+
     public List<Editora> getEditoras() {
         return logicaLivro.listEditoras();
     }
-    
-    public void onRowSelect(SelectEvent event) {  
+
+    public void onRowSelect(SelectEvent event) {
         this.livro = (Livro) event.getObject();
         this.editora = livro.getEditora();
     }

@@ -5,9 +5,11 @@ import com.seven.mavenbiblioteca.modelo.Endereco;
 import com.seven.mavenbiblioteca.modelo.Usuario;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.faces.application.FacesMessage;
 import javax.faces.application.NavigationHandler;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.RequestScoped;
@@ -24,77 +26,86 @@ public class UsuarioMB {
     private List usuarios;
     private Boolean but;
     private final LogicaUsusario logicaU;
-    
+    private final FacesContext context;
+
     public UsuarioMB() {
         usuario = new Usuario();
         endereco = new Endereco();
         logicaU = new LogicaUsusario();
         usuarios = logicaU.listarUsuario();
         but = false;
+        context = FacesContext.getCurrentInstance();
     }
-    
-    public void cadastrarUsuario(){
+
+    public void cadastrarUsuario() {
         usuario.setCpf(logicaU.removerMascara(usuario.getCpf()));
-        endereco.setCep(logicaU.removerMascara(endereco.getCep()));
-        usuario.setEndereco(endereco);
-        usuario.setData_punicao(null);
-        usuario.setPrioridade(logicaU.convertPrioridade(prioridade));
-        logicaU.novoUsuario(usuario);
-        usuario = new Usuario();
-        endereco = new Endereco();
-        usuarios = logicaU.listarUsuario();
-        try {
-            FacesContext.getCurrentInstance().getExternalContext().redirect("cadastrarUsuario.xhtml");
-        } catch (IOException ex) {
-            Logger.getLogger(UsuarioMB.class.getName()).log(Level.SEVERE, null, ex);
+        if (logicaU.pesquisarUsuarioCPF(usuario) == null) {
+            endereco.setCep(logicaU.removerMascara(endereco.getCep()));
+            usuario.setEndereco(endereco);
+            usuario.setData_punicao(new Date(1969 - 12 - 31));
+            usuario.setPrioridade(logicaU.convertPrioridade(prioridade));
+            logicaU.novoUsuario(usuario);
+            usuario = new Usuario();
+            endereco = new Endereco();
+            usuarios = logicaU.listarUsuario();
+
+            context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Sucesso", "Usuário cadastrado!"));
+        } else {
+            context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Erro", "CPF cadastrado ou CPF Inválido!"));
         }
     }
-    
-    public void pesquisarUsuario(){
+
+    public void pesquisarUsuario() {
         usuario.setCpf(logicaU.removerMascara(usuario.getCpf()));
         usuario = logicaU.pesquisarUsuarioCPF(usuario);
-        
-        if(usuario==null){
+
+        if (usuario == null) {
             try {
-            FacesContext.getCurrentInstance().getExternalContext().redirect("index.xhtml");
+                FacesContext.getCurrentInstance().getExternalContext().redirect("index.xhtml");
             } catch (IOException ex) {
                 Logger.getLogger(UsuarioMB.class.getName()).log(Level.SEVERE, null, ex);
             }
-        }else{
+        } else {
             endereco = usuario.getEndereco();
             prioridade = logicaU.desconverterPrioridade(usuario.getPrioridade());
 
-            NavigationHandler navigationHandler = FacesContext.getCurrentInstance().getApplication().getNavigationHandler();  
+            NavigationHandler navigationHandler = FacesContext.getCurrentInstance().getApplication().getNavigationHandler();
             navigationHandler.handleNavigation(FacesContext.getCurrentInstance(), null, "mostrarUsuario");
         }
     }
-    
-    public void alterarUsuario(){
+
+    public void alterarUsuario() {
         usuario.setCpf(logicaU.removerMascara(usuario.getCpf()));
         endereco.setCep(logicaU.removerMascara(endereco.getCep()));
         usuario.setEndereco(endereco);
         usuario.setPrioridade(logicaU.convertPrioridade(prioridade));
         logicaU.alterarUsuario(usuario);
+
+        usuario = new Usuario();
+        endereco = new Endereco();
         but = false;
+
+        
         try {
-            FacesContext.getCurrentInstance().getExternalContext().redirect("cadastrarUsuario.xhtml");
+            context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Sucesso", "Usuário alterado!"));
+            FacesContext.getCurrentInstance().getExternalContext().redirect("cadastrarUsuario.xhtml"); 
         } catch (IOException ex) {
             Logger.getLogger(UsuarioMB.class.getName()).log(Level.SEVERE, null, ex);
         }
+
     }
-    
-    public void excluirUsuario(){
+
+    public void excluirUsuario() {
         usuario.setEndereco(endereco);
         logicaU.excluirUsuario(usuario);
-        but =false;
-        try {
-            FacesContext.getCurrentInstance().getExternalContext().redirect("cadastrarUsuario.xhtml");
-        } catch (IOException ex) {
-            Logger.getLogger(UsuarioMB.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        but = false;
+        usuario = new Usuario();
+        endereco = new Endereco();
+
+        context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Sucesso", "Usuário excluido!"));
     }
-    
-    public void onRowSelect(SelectEvent event) {  
+
+    public void onRowSelect(SelectEvent event) {
         this.usuario = (Usuario) event.getObject();
         this.endereco = usuario.getEndereco();
         but = true;
@@ -170,5 +181,5 @@ public class UsuarioMB {
     public void setBut(Boolean but) {
         this.but = but;
     }
-    
+
 }

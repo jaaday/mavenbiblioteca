@@ -1,0 +1,50 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+    <h:head>
+        <title>Facelet Title</title>
+    </h:head>
+    <ui:decorate template="/tema/padrao.xhtml">
+        <ui:define name="centro">
+            <h:form id="form4">
+                <p:growl id="growl4" showDetail="true" sticky="false" life="3000"/>
+                <p:panel id="realizarrEmprestimo" header="Realizar Emprestimo">
+                    <p:panel id="dadosEmprestimo" header="Dados do Emprestimo" >
+                        <h:inputHidden value="#{emprestimoMB.emprestimo.id}"/>
+                        <p:panelGrid  columns="2" styleClass="semBorda"> 
+                            CPF do Cliente: <p:inputMask mask="999.999.999-99" value="#{emprestimoMB.usuario.cpf}" required="true" requiredMessage="Campo CPF Obrigatório"/>
+                            Titulo do livro: <p:inputText id="titulo_livro" readonly="true" value="#{emprestimoMB.livro.titulo}" />
+                            <h:inputHidden id="id_livro" value="#{emprestimoMB.livro.id}" required="true" requiredMessage="Campo Titulo do Livro Obrigatório"/>
+                        </p:panelGrid>
+                    </p:panel>
+                    <div align="center">
+                        <p:commandButton value="Salvar" ajax="false" oncomplete="PF('dialog').show()" update="form4" action="#{emprestimoMB.novoEmprestimo()}"/>
+                    </div>
+                </p:panel>
+                <p:dataTable id="tabelaLivrosDisponiveis" value="#{emprestimoMB.livrosDiponiveis}" emptyMessage="Não há registros" var="livro" paginator="true" rows="5"
+                             selectionMode="single" rowKey="#{livro.id}"> 
+                    <p:column headerText="Id"> 
+                        <h:outputText value="#{livro.id}"/> 
+                    </p:column> 
+                    <p:column headerText="ISBN" filterBy="#{livro.isbn}" filterMatchMode="contains"> 
+                        <h:outputText value="#{livro.isbn}"/> 
+                    </p:column> 
+                    <p:column headerText="Titulo" filterBy="#{livro.titulo}" filterMatchMode="contains"> 
+                        <h:outputText value="#{livro.titulo}"/> 
+                    </p:column> 
+                    <p:column headerText="Autor" filterBy="#{livro.autor}" filterMatchMode="contains"> 
+                        <h:outputText value="#{livro.autor}"/> 
+                    </p:column> 
+                    <p:column headerText="Área de Conhecimento" filterBy="#{livro.area_conhecimento}" filterMatchMode="contains"> 
+                        <h:outputText value="#{livro.area_conhecimento}"/> 
+                    </p:column>
+                    <p:ajax event="rowSelect" update=":form4:id_livro, :form4:titulo_livro" listener="#{emprestimoMB.onRowSelect}"/>
+                </p:dataTable>
+            </h:form>
+        </ui:define>
+    </ui:decorate>
+</html>
+

@@ -10,6 +10,8 @@ import javax.persistence.EntityNotFoundException;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 import com.seven.mavenbiblioteca.modelo.Emprestimo;
+import com.seven.mavenbiblioteca.modelo.Usuario;
+import javax.persistence.TypedQuery;
 
 public class EmprestimoJpaController implements Serializable {
 
@@ -33,6 +35,18 @@ public class EmprestimoJpaController implements Serializable {
             if (em != null) {
                 em.close();
             }
+        }
+    }
+    
+    public List<Emprestimo> emprestimosAbertosUsuario(Usuario u){
+        EntityManager em = getEntityManager();
+        try{
+            TypedQuery<Emprestimo> query = em.createQuery("select e.* from EMPRESTIMO e where e.USUARIO_ID = :uId and e.DATA_DEVOLUCAO = '1969-12-31'", Emprestimo.class);
+            query.setParameter("uID", u.getId());
+            return query.getResultList();
+            
+        }catch (Exception e){
+            return null;
         }
     }
 
@@ -125,5 +139,5 @@ public class EmprestimoJpaController implements Serializable {
             em.close();
         }
     }
-
+    
 }

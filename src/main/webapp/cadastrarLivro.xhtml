@@ -11,20 +11,21 @@
     <ui:decorate template="/tema/padrao.xhtml">
         <ui:define  name="centro">
             <h:form id="form3">
+                <p:growl id="growl3" showDetail="true" sticky="false" life="3000"/>
                 <p:panel id="cadastrarLivro" header="Cadastrar Livro">
                     <p:panel id="dadoslivros" header="Dados do Livro">
                         <h:inputHidden value="#{livroMB.livro.id}"/>
                         <p:panelGrid  columns="2" styleClass="semBorda">
-                            Titulo: <p:inputText value="#{livroMB.livro.titulo}"/>
-                            ISBN: <p:inputText value="#{livroMB.livro.isbn}"/>
-                            Área de Conhecimento: <p:inputText value="#{livroMB.livro.area_conhecimento}"/>
+                            Titulo: <p:inputText value="#{livroMB.livro.titulo}" required="true" requiredMessage="Campo Titulo Obrigatório"/>
+                            ISBN: <p:inputText value="#{livroMB.livro.isbn}" required="true" requiredMessage="Campo ISBN Obrigatório" />
+                            Área de Conhecimento: <p:inputText value="#{livroMB.livro.area_conhecimento}" required="true" requiredMessage="Campo Área de Conhecimento Obrigatório" />
                             Categoria: <p:selectOneMenu id="prioridade" value="#{livroMB.livro.categoria}" effect="fade">
                                 <f:selectItem itemLabel= "Livro" itemValue="Livro"/>
                                 <f:selectItem itemLabel= "Artigo" itemValue="Artigo"/>
                                 <f:selectItem itemLabel= "TCC/Monografia" itemValue="TCC/Monografia"/>
                             </p:selectOneMenu>
-                            Autor: <p:inputText value="#{livroMB.livro.autor}"/>
-                            Ano de Lançamento: <p:inputMask mask="9999" value="#{livroMB.livro.ano_lancamento}"/>
+                            Autor: <p:inputText value="#{livroMB.livro.autor}" required="true" requiredMessage="Campo Autor Obrigatório"/>
+                            Ano de Lançamento: <p:inputMask mask="9999" value="#{livroMB.livro.ano_lancamento}" required="true" requiredMessage="Campo Ano de Lançamento Obrigatório"/>
                             <h:outputLabel for="basic" value="Quantidade de Exemplar: " />
                             <p:spinner id="basic" value="#{livroMB.numero}" min="1"/>
                             <p:outputLabel for="editora" value="Editora: " />
@@ -34,9 +35,9 @@
                         </p:panelGrid>
                     </p:panel>
                     <div align="center">
-                        <p:commandButton value="Salvar" oncomplete="PF('dialog').show()" update="tabelaLivros" action="#{livroMB.novoLivro()}"/>
-                        <p:commandButton value="Alterar" oncomplete="PF('dialog').show()" update="tabelaLivros" action="#{livroMB.alterarLivro()}"/>
-                        <p:commandButton value="Excluir" oncomplete="PF('dialog').show()" update="tabelaLivros" action="#{livroMB.excluirLivro()}"/>
+                        <p:commandButton value="Salvar" ajax="false" oncomplete="PF('dialog').show()" update="form3" action="#{livroMB.novoLivro()}"/>
+                        <p:commandButton value="Alterar" ajax="false" oncomplete="PF('dialog').show()" update="form3" action="#{livroMB.alterarLivro()}"/>
+                        <p:commandButton value="Excluir" ajax="false" oncomplete="PF('dialog').show()" update="form3" action="#{livroMB.excluirLivro()}"/>
                     </div>
                 </p:panel>
                 <p:dataTable id="tabelaLivros" value="#{livroMB.livros}" emptyMessage="Não há registros" var="livro" paginator="true" rows="5"
@@ -56,7 +57,7 @@
                     <p:column headerText="Área de Conhecimento" filterBy="#{livro.area_conhecimento}" filterMatchMode="contains"> 
                         <h:outputText value="#{livro.area_conhecimento}"/> 
                     </p:column>
-                    <p:ajax event="rowSelect" update=":form3" listener="#{livroMB.onRowSelect}"/>
+                    <p:ajax event="rowSelect" update=":form3:cadastrarLivro" listener="#{livroMB.onRowSelect}"/>
                 </p:dataTable> 
             </h:form>
         </ui:define>

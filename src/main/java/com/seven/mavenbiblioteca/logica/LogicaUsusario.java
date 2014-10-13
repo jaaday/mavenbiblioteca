@@ -1,5 +1,6 @@
 package com.seven.mavenbiblioteca.logica;
 
+import com.seven.mavenbiblioteca.beans.util.ValidarCPF;
 import com.seven.mavenbiblioteca.dao.EnderecoJpaController;
 import com.seven.mavenbiblioteca.dao.UsuarioJpaController;
 import com.seven.mavenbiblioteca.dao.exceptions.NonexistentEntityException;
@@ -10,21 +11,22 @@ import com.seven.mavenbiblioteca.modelo.Usuario;
 import com.seven.mavenbiblioteca.dao.util.Emf;
 
 public class LogicaUsusario {
-
     private final UsuarioJpaController daoUsuario;
     private final EnderecoJpaController daoEndereco;
-
-    public LogicaUsusario() {
+    private final ValidarCPF validarCPF;
+    
+    public LogicaUsusario(){
         daoUsuario = new UsuarioJpaController(Emf.factory);
         daoEndereco = new EnderecoJpaController(Emf.factory);
+        validarCPF = new ValidarCPF();
     }
-
-    public void novoUsuario(Usuario u) {
+    
+    public void novoUsuario(Usuario u){
         daoUsuario.create(u);
     }
-
-    public void alterarUsuario(Usuario u) {
-
+    
+    public void alterarUsuario(Usuario u){
+        
         try {
             daoUsuario.edit(u);
         } catch (Exception ex) {
@@ -36,8 +38,8 @@ public class LogicaUsusario {
             Logger.getLogger(LogicaUsusario.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-
-    public void excluirUsuario(Usuario u) {
+    
+    public void excluirUsuario(Usuario u){
         try {
             daoUsuario.destroy(u.getId());
         } catch (NonexistentEntityException ex) {
@@ -49,16 +51,16 @@ public class LogicaUsusario {
             Logger.getLogger(LogicaUsusario.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-
-    public List<Usuario> listarUsuario() {
+    
+    public List<Usuario> listarUsuario(){
         return daoUsuario.findUsuarioEntities();
     }
-
-    public Usuario pesquisarUsuarioCPF(Usuario u) {
+    
+    public Usuario pesquisarUsuarioCPF(Usuario u){
         return daoUsuario.pesquisarUsuarioCPF(u);
     }
-
-    public int convertPrioridade(String p) {
+    
+    public int convertPrioridade(String p){
         switch (p) {
             case "Funcionario":
                 return 2;
@@ -68,8 +70,8 @@ public class LogicaUsusario {
                 return 1;
         }
     }
-
-    public String desconverterPrioridade(int p) {
+    
+    public String desconverterPrioridade(int p){
         switch (p) {
             case 2:
                 return "Funcionario";
@@ -79,8 +81,14 @@ public class LogicaUsusario {
                 return "Cliente";
         }
     }
-
-    public String removerMascara(String text) {
-        return text.replaceAll("[.-]", "");
+    
+    public Boolean validarCPF(String cpf){
+        removerMascara(cpf);
+        return validarCPF.validarCpf(cpf);
+    }
+    
+    
+    public String removerMascara(String text){
+        return text.replaceAll("[.-]", "");  
     }
 }

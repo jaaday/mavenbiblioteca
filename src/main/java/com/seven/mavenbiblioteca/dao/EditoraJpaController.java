@@ -25,34 +25,34 @@ public class EditoraJpaController implements Serializable {
     }
 
     public void create(Editora editora) {
-        if (editora.getEndereco() == null) {
+        if(editora.getEndereco() == null){
             editora.setEndereco(new Endereco());
         }
         EntityManager em = null;
         try {
             em = getEntityManager();
             em.getTransaction().begin();
-
+            
             Endereco endereco = editora.getEndereco();
             em.persist(endereco);
-            em.persist(editora);
+            em.persist(editora); 
             em.getTransaction().commit();
-
+            
         } finally {
             if (em != null) {
                 em.close();
             }
         }
     }
-
-    public Editora pesqEditoraNome(Editora editora) {
+    
+    public Editora pesqEditoraNome(Editora editora){
         EntityManager em = getEntityManager();
-        try {
-            TypedQuery<Editora> query = em.createQuery("select e from Editora e where e.nome = :nome", Editora.class);
+        try{                                
+            TypedQuery<Editora> query = em.createQuery("select e from Editora e where e.nome = :nome",Editora.class);
             query.setParameter("nome", editora.getNome());
             return query.getSingleResult();
-
-        } catch (Exception e) {
+            
+        }catch (Exception e){
             return null;
         }
     }
@@ -146,5 +146,5 @@ public class EditoraJpaController implements Serializable {
             em.close();
         }
     }
-
+    
 }
