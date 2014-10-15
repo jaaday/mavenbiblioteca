@@ -39,10 +39,12 @@ public class EmprestimoJpaController implements Serializable {
     }
     
     public List<Emprestimo> emprestimosAbertosUsuario(Usuario u){
+                
         EntityManager em = getEntityManager();
         try{
-            TypedQuery<Emprestimo> query = em.createQuery("select e.* from EMPRESTIMO e where e.USUARIO_ID = :uId and e.DATA_DEVOLUCAO = '1969-12-31'", Emprestimo.class);
-            query.setParameter("uID", u.getId());
+            String pesq = " select e.* from EMPRESTIMO e, USUARIO u where e.USUARIO_ID = u.ID and u.CPF = '" +u.getCpf() + "' and e.DATA_DEVOLUCAO = '1969-12-31'";
+            TypedQuery<Emprestimo> query = (TypedQuery<Emprestimo>) em.createNativeQuery(pesq, Emprestimo.class);
+            
             return query.getResultList();
             
         }catch (Exception e){

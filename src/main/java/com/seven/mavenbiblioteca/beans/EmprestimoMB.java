@@ -44,33 +44,37 @@ public class EmprestimoMB {
             usuario = logicaUsuario.pesquisarUsuarioCPF(usuario);
             if (logicaEmprestimo.verificarPunicao(usuario)) {
                 if (logicaEmprestimo.qtdEmprestimosAbertos(usuario) < 3) {
+                    if (logicaEmprestimo.exemplarEmprest(usuario, livro)) {
+                        emprestimo.setUsuario(usuario);
+                        emprestimo.setLivro(logicaLivro.pesqLivroID(livro.getId()));
+                        emprestimo.setData_devolucao(new Date(1969 - 12 - 31));
+                        emprestimo.setData_emprestimo(new Date());
+                        emprestimo.setAtraso(false);
+                        emprestimo.setData_presvista_devolucao(somarData(10, emprestimo.getData_emprestimo()));
 
-                    emprestimo.setUsuario(usuario);
-                    emprestimo.setData_devolucao(new Date(1969 - 12 - 31));
-                    emprestimo.setData_emprestimo(new Date());
-                    emprestimo.setAtraso(false);
-                    emprestimo.setData_presvista_devolucao(somarData(10, emprestimo.getData_emprestimo()));
-                    emprestimo.setLivro(logicaLivro.pesqLivroID(livro.getId()));
-                    logicaEmprestimo.cadastrarEmprestimo(emprestimo);
+                        logicaEmprestimo.cadastrarEmprestimo(emprestimo);
 
-                    emprestimo = new Emprestimo();
-                    usuario = new Usuario();
-                    livro = new Livro();
-                    
-                    context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Sucesso", "Emprestimo realizado!"));
+                        emprestimo = new Emprestimo();
+                        usuario = new Usuario();
+                        livro = new Livro();
+
+                        context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Sucesso", "Emprestimo realizado!"));
 
 //                    try {
 //                        FacesContext.getCurrentInstance().getExternalContext().redirect("cadastrarEmprestimo.xhtml");
 //                    } catch (IOException ex) {
 //                        Logger.getLogger(EmprestimoMB.class.getName()).log(Level.SEVERE, null, ex);
 //                    }
-                }else{
+                    }else{
+                        context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_WARN, "Atenção", "Livro já emprestado!"));
+                    }
+                } else {
                     context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_WARN, "Atenção", "Usuário atingiu o limite de emprestimos"));
                 }
-            }else{
+            } else {
                 context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_WARN, "Atenção", "Usuário está punido até" + usuario.getData_punicao()));
             }
-        }else{
+        } else {
             context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Erro", "CPF não cadastrado ou CPF Inválido!"));
         }
 
