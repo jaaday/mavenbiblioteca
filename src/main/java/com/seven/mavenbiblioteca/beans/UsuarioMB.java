@@ -45,8 +45,11 @@ public class UsuarioMB {
             usuario.setData_punicao(new Date(1969 - 12 - 31));
             usuario.setPrioridade(logicaU.convertPrioridade(prioridade));
             logicaU.novoUsuario(usuario);
-            usuario = new Usuario();
-            endereco = new Endereco();
+            if(logicaU.validarCPF(usuario.getCpf()))
+            {
+                usuario = new Usuario();
+                endereco = new Endereco();
+            }
             usuarios = logicaU.listarUsuario();
 
             context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Sucesso", "Usuário cadastrado!"));
