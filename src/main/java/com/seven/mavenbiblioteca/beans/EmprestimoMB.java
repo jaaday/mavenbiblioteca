@@ -45,27 +45,31 @@ public class EmprestimoMB {
             if (logicaEmprestimo.verificarPunicao(usuario)) {
                 if (logicaEmprestimo.qtdEmprestimosAbertos(usuario) < 3) {
                     if (logicaEmprestimo.exemplarEmprest(usuario, livro)) {
-                        emprestimo.setUsuario(usuario);
-                        emprestimo.setLivro(logicaLivro.pesqLivroID(livro.getId()));
-                        emprestimo.setData_devolucao(new Date(1969 - 12 - 31));
-                        emprestimo.setData_emprestimo(new Date());
-                        emprestimo.setAtraso(false);
-                        emprestimo.setData_presvista_devolucao(somarData(10, emprestimo.getData_emprestimo()));
+                        if (logicaEmprestimo.veirficarLivroEntregueHoje(usuario, livro)) {
+                            emprestimo.setUsuario(usuario);
+                            emprestimo.setLivro(logicaLivro.pesqLivroID(livro.getId()));
+                            emprestimo.setData_devolucao(new Date(1969 - 12 - 31));
+                            emprestimo.setData_emprestimo(new Date());
+                            emprestimo.setAtraso(false);
+                            emprestimo.setData_presvista_devolucao(somarData(10, emprestimo.getData_emprestimo()));
 
-                        logicaEmprestimo.cadastrarEmprestimo(emprestimo);
+                            logicaEmprestimo.cadastrarEmprestimo(emprestimo);
 
-                        emprestimo = new Emprestimo();
-                        usuario = new Usuario();
-                        livro = new Livro();
+                            emprestimo = new Emprestimo();
+                            usuario = new Usuario();
+                            livro = new Livro();
 
-                        context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Sucesso", "Emprestimo realizado!"));
+                            context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Sucesso", "Emprestimo realizado!"));
 
 //                    try {
 //                        FacesContext.getCurrentInstance().getExternalContext().redirect("cadastrarEmprestimo.xhtml");
 //                    } catch (IOException ex) {
 //                        Logger.getLogger(EmprestimoMB.class.getName()).log(Level.SEVERE, null, ex);
 //                    }
-                    }else{
+                        }else{
+                            context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_WARN, "Atenção", "O livro não pode ser emprestado!"));
+                        }
+                    } else {
                         context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_WARN, "Atenção", "Livro já emprestado!"));
                     }
                 } else {

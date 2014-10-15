@@ -11,6 +11,7 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 import com.seven.mavenbiblioteca.modelo.Emprestimo;
 import com.seven.mavenbiblioteca.modelo.Usuario;
+import java.util.Date;
 import javax.persistence.TypedQuery;
 
 public class EmprestimoJpaController implements Serializable {
@@ -43,6 +44,20 @@ public class EmprestimoJpaController implements Serializable {
         EntityManager em = getEntityManager();
         try{
             String pesq = " select e.* from EMPRESTIMO e, USUARIO u where e.USUARIO_ID = u.ID and u.CPF = '" +u.getCpf() + "' and e.DATA_DEVOLUCAO = '1969-12-31'";
+            TypedQuery<Emprestimo> query = (TypedQuery<Emprestimo>) em.createNativeQuery(pesq, Emprestimo.class);
+            
+            return query.getResultList();
+            
+        }catch (Exception e){
+            return null;
+        }
+    }
+    
+    public List<Emprestimo> emprestimosFechadosUsuario(Usuario u, Date hoje){
+                
+        EntityManager em = getEntityManager();
+        try{
+            String pesq = "select e.* from EMPRESTIMO e, USUARIO u where e.USUARIO_ID = u.ID and u.CPF = '" +u.getCpf() + "' and e.DATA_DEVOLUCAO = '"+hoje+"'";
             TypedQuery<Emprestimo> query = (TypedQuery<Emprestimo>) em.createNativeQuery(pesq, Emprestimo.class);
             
             return query.getResultList();
