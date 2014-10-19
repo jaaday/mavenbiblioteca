@@ -15,7 +15,8 @@ import java.util.Date;
 import javax.persistence.TypedQuery;
 
 public class EmprestimoJpaController implements Serializable {
-
+  
+     
     public EmprestimoJpaController(EntityManagerFactory emf) {
         this.emf = emf;
     }
@@ -36,6 +37,18 @@ public class EmprestimoJpaController implements Serializable {
             if (em != null) {
                 em.close();
             }
+        }
+    }
+    
+    public List<Emprestimo> emprestimosAndamento(){
+                
+        EntityManager em = getEntityManager();
+        try{
+            TypedQuery<Emprestimo> query = (TypedQuery<Emprestimo>) em.createNativeQuery("select * from usuario u, livro l, emprestimo e where e.usuario_id = u.id and e.livro_id = l.id and e.DATA_DEVOLUCAO = '1969-12-31'",Emprestimo.class);
+            return query.getResultList();
+        }catch (Exception e){
+            e.printStackTrace();
+            return null;
         }
     }
     
@@ -71,9 +84,9 @@ public class EmprestimoJpaController implements Serializable {
         EntityManager em = null;
         try {
             em = getEntityManager();
-            em.getTransaction().begin();
+            em.getTransaction().begin();           
             emprestimo = em.merge(emprestimo);
-            em.getTransaction().commit();
+            em.getTransaction().commit();                
         } catch (Exception ex) {
             String msg = ex.getLocalizedMessage();
             if (msg == null || msg.length() == 0) {
@@ -156,5 +169,9 @@ public class EmprestimoJpaController implements Serializable {
             em.close();
         }
     }
+
+    
+    
+    
     
 }

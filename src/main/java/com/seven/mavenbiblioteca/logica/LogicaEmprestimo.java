@@ -10,14 +10,19 @@ import com.seven.mavenbiblioteca.modelo.Usuario;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.GregorianCalendar;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.faces.application.FacesMessage;
+import javax.faces.context.FacesContext;
 
 public class LogicaEmprestimo {
 
     private final EmprestimoJpaController daoEmprestimo;
     private final UsuarioJpaController daoUsuario;
     private final LivroJpaController daoLivro;
+    private FacesContext context = FacesContext.getCurrentInstance();
+    
 
     public LogicaEmprestimo() {
         daoEmprestimo = new EmprestimoJpaController(Emf.factory);
@@ -73,7 +78,7 @@ public class LogicaEmprestimo {
         return e.getData_devolucao().before(e.getData_presvista_devolucao());
     }
     
-    public int DiferencaEntreDatas(String data1, String data2) throws ParseException {
+    /*public int DiferencaEntreDatas(String data1, String data2) throws ParseException {
         GregorianCalendar ini = new GregorianCalendar();
         GregorianCalendar fim = new GregorianCalendar();
         SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
@@ -82,5 +87,27 @@ public class LogicaEmprestimo {
         long dt1 = ini.getTimeInMillis();
         long dt2 = fim.getTimeInMillis();
         return (int) (((dt2 - dt1) / 86400000) + 1);
+    }*/
+    
+    public int DiferencaEntreDatas(Date data1, Date data2) {
+        int ini = (int) data1.getTime();
+        int fim = (int) data2.getTime();
+        int dias = (ini - fim)/86400000; //miliseconds 1000 * 60 * 60 * 24
+        return dias; // retorna a quantidade de dias
     }
+    
+    public List<Emprestimo> emprestimosAbertos(){
+        return daoEmprestimo.emprestimosAndamento();
+    }
+    
+    public void realizarDevolucao(Emprestimo emp){
+        
+        try{
+            daoEmprestimo.destroy(emp.getId());
+            context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Atenção ", "Entroufunc2"));
+        }catch (Exception ex) {
+            Logger.getLogger(LogicaLivro.class.getName()).log(Level.SEVERE, null, ex);
+        }    
+    }
+   
 }
