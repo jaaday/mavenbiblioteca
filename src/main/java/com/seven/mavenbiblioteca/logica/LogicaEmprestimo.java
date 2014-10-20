@@ -104,7 +104,6 @@ public class LogicaEmprestimo {
         
         try{
             daoEmprestimo.destroy(emp.getId());
-            context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Atenção ", "Entroufunc2"));
         }catch (Exception ex) {
             Logger.getLogger(LogicaLivro.class.getName()).log(Level.SEVERE, null, ex);
         }    

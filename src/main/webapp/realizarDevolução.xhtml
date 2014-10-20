@@ -14,7 +14,8 @@ and open the template in the editor.
         <title>Facelet Title</title>
     </h:head>
     <ui:decorate template="/tema/padrao.xhtml">
-        <ui:define  name="centro">                 
+        <ui:define  name="centro">   
+           
                 <h:form id="form1">
                     <p:growl id="growl3" showDetail="true" sticky="false" life="3000"/>
                 <p:panel id="realizarDevolucao" header="Realizar Devolução">                   
@@ -34,7 +35,7 @@ and open the template in the editor.
                             </h:outputText>
                     </p:column>                       
                         <p:column >
-                            <p:commandButton value="Devolver" ajax="false" oncomplete="PF('dialog').show()" update="emprestimosAbertos" action="#{emprestimoMB.realizarDevolucao(emprestimo)}"/>
+                            <p:commandButton value="Devolver" ajax="false" oncomplete="PF('dialog').show()" update="form1" action="#{emprestimoMB.realizarDevolucao(emprestimo)}"/>
                         </p:column>
                     </p:dataTable>
                        

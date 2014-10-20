@@ -6,10 +6,13 @@ import com.seven.mavenbiblioteca.logica.LogicaUsusario;
 import com.seven.mavenbiblioteca.modelo.Emprestimo;
 import com.seven.mavenbiblioteca.modelo.Livro;
 import com.seven.mavenbiblioteca.modelo.Usuario;
+import java.io.IOException;
 import java.text.ParseException;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.RequestScoped;
@@ -98,6 +101,12 @@ public class EmprestimoMB {
     public void onRowSelect(SelectEvent event) {
         this.livro = (Livro) event.getObject();
     }
+    
+    public void onRowSelectEmp(SelectEvent event) {
+        this.emprestimo = (Emprestimo) event.getObject();
+        this.livro = emprestimo.getLivro();
+        this.usuario = emprestimo.getUsuario();
+    }
 
     /**
      * @return the emprestimo
@@ -166,18 +175,19 @@ public class EmprestimoMB {
     public void realizarDevolucao(Emprestimo emp){
         
            emp.setData_devolucao(new Date());
-           emp.setLivro(livro);
-           emp.setUsuario(usuario);
-           context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Atenção ", "Entroufunc"));
+           //emp.setLivro(livro);
+           //emp.setUsuario(usuario);  
            if(logicaEmprestimo.verificarAtraso(emp) == false){
                 int aux = logicaEmprestimo.DiferencaEntreDatas(emp.getData_devolucao(), emp.getData_presvista_devolucao());
                 aux = aux * 2;
                 emp.getUsuario().setData_punicao(somarData(aux, emp.getData_devolucao()));
+                logicaUsuario.alterarUsuario(emp.getUsuario());
                 context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Atenção ", "Usuário "+emp.getUsuario().getNome()+ " foi punido em " +aux+ " dias."));       
            }
+           emp.setLivro(null);
+           emp.setUsuario(null);
            logicaEmprestimo.realizarDevolucao(emp);
            context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Sucesso ", "Livro devolvido"));
-        
     }
 
     public void setDescricao(String descricao) {
