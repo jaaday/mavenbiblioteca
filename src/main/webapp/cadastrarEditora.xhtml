@@ -58,13 +58,18 @@
                                 </p:panelGrid>
                             </p:panel>
                         </p:panelGrid>
+                        <br/>
                         <p:commandButton value="Salvar" ajax="false" oncomplete="PF('dialog').show()" update="form2" action="#{editoraMB.novaEditora()}"/>
                         <p:commandButton value="Alterar" ajax="false" oncomplete="PF('dialog').show()" update="form2" action="#{editoraMB.alterarEditora()}"/>
                         <p:commandButton value="Excluir" ajax="false" oncomplete="PF('dialog').show()" update="form2" action="#{editoraMB.excluirEditora()}"/>
                     </div>
-                </p:panel>   
+                </p:panel>
+                <br/>
                 <p:dataTable id="tabelaEditoras" value="#{editoraMB.editoras}" emptyMessage="Não há registros" var="editora" paginator="true" rows="5"
                              selectionMode="single" rowKey="#{editora.id}"> 
+                    <f:facet name="header">
+                        <h:outputText value="Editoras cadastradas"/>
+                    </f:facet>
                     <p:column headerText="Nome" filterBy="#{editora.nome}" filterMatchMode="contains"> 
                         <h:outputText value="#{editora.nome}"/> 
                     </p:column> 

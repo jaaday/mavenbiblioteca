@@ -9,74 +9,98 @@
         <title>Facelet Title</title>
     </h:head>
     <ui:decorate template="/tema/padrao.xhtml">
-        <ui:define  name="centro">
+        <ui:define  name="centro">   
             <h:form id="form1">
                 <!--p:growl id="growl1" showDetail="false" sticky="false" life="3000"/-->
-                                
-                <p:panel id="cadastrarCliente" header="Cadastrar Usuário">
-                    <div align="center" >
-                        <p:panelGrid columns="2" class="semBorda">
-                            <p:panel id="pessoais" header="Dados Pessoais" >
-                                <h:inputHidden value="#{usuarioMB.usuario.id}"/>
-                                <p:panelGrid  columns="3" styleClass="semBorda"> 
-                                    Nome *: <p:inputText id="nomeUser" value="#{usuarioMB.usuario.nome}" required="true" requiredMessage="Campo Nome Obrigatório"/> <p:message for="nomeUser"/>
-                                    CPF *: <p:inputMask id="cpfUser" mask="999.999.999-99" value="#{usuarioMB.usuario.cpf}" required="true"  requiredMessage="Campo CPF Obrigatório"/> <p:message for="cpfUser"/>
-                                    RG *: <p:inputText id="rgUser" value="#{usuarioMB.usuario.rg}" required="true" requiredMessage="Campo RG Obrigatório"/> <p:message for="rgUser"/>
-                                    Email *: <p:inputText id="emailUser" value="#{usuarioMB.usuario.email}" required="true" requiredMessage="Campo Email Obrigatório"/><p:message for="emailUser"/>
-                                    Prioridade: <p:selectOneMenu id="prioridade" value="#{usuarioMB.prioridade}" effect="fade">
-                                        <f:selectItem itemLabel= "Cliente" itemValue="Cliente"/>
-                                        <f:selectItem itemLabel= "Funcionario" itemValue="Funcionario"/>
-                                        <f:selectItem itemLabel= "Administrador" itemValue="Administrador"/>
-                                    </p:selectOneMenu>
-                                </p:panelGrid>
-                            </p:panel>
-                            <p:panel id="endereco" header="Endereço" >
-                                <h:inputHidden value="#{usuarioMB.endereco.id}"/>
-                                <p:panelGrid  columns="3" styleClass="semBorda">
-                                    Logradouro: <p:inputText id="logra" value="#{usuarioMB.endereco.logradouro}" required="true" requiredMessage="Campo Logradouro Obrigatório"/> <p:message for="logra"/>
-                                    Número: <p:inputText id="number" value="#{usuarioMB.endereco.numero}" required="true" requiredMessage="Campo Número Obrigatório"/> <p:message for="number"/>
-                                    Cidade: <p:inputText id="city" value="#{usuarioMB.endereco.cidade}" required="true" requiredMessage="Campo Cidade Obrigatório"/> <p:message for="city"/>
-                                    CEP: <p:inputMask id="cep" mask="99.999-999" value="#{usuarioMB.endereco.cep}" required="true" requiredMessage="Campo CEP Obrigatório"/> <p:message for="cep"/>
-                                    UF: <p:selectOneMenu id="ufUsuario" value="#{usuarioMB.endereco.uf}" effect="fade">
-                                        <f:selectItem itemLabel= "AC" itemValue="AC"/>
-                                        <f:selectItem itemLabel= "AL" itemValue="AL"/>
-                                        <f:selectItem itemLabel= "AM" itemValue="AM"/>
-                                        <f:selectItem itemLabel= "AP" itemValue="AP"/>
-                                        <f:selectItem itemLabel= "BA" itemValue="BA"/>
-                                        <f:selectItem itemLabel= "CE" itemValue="CE"/>
-                                        <f:selectItem itemLabel= "DF" itemValue="DF"/>
-                                        <f:selectItem itemLabel= "ES" itemValue="ES"/>
-                                        <f:selectItem itemLabel= "GO" itemValue="GO"/>
-                                        <f:selectItem itemLabel= "MA" itemValue="MA"/>
-                                        <f:selectItem itemLabel= "MG" itemValue="MG"/>
-                                        <f:selectItem itemLabel= "MT" itemValue="MT"/>
-                                        <f:selectItem itemLabel= "MS" itemValue="MS"/>
-                                        <f:selectItem itemLabel= "PA" itemValue="PA"/>
-                                        <f:selectItem itemLabel= "PB" itemValue="PB"/>
-                                        <f:selectItem itemLabel= "PE" itemValue="PE"/>
-                                        <f:selectItem itemLabel= "PI" itemValue="PI"/>
-                                        <f:selectItem itemLabel= "PR" itemValue="PR"/>
-                                        <f:selectItem itemLabel= "RN" itemValue="RN"/>
-                                        <f:selectItem itemLabel= "RJ" itemValue="RJ"/>
-                                        <f:selectItem itemLabel= "RO" itemValue="RO"/>
-                                        <f:selectItem itemLabel= "RR" itemValue="RR"/>
-                                        <f:selectItem itemLabel= "RS" itemValue="RS"/>
-                                        <f:selectItem itemLabel= "SC" itemValue="SC"/>
-                                        <f:selectItem itemLabel= "SE" itemValue="SE"/>
-                                        <f:selectItem itemLabel= "SP" itemValue="SP"/>
-                                        <f:selectItem itemLabel= "TO" itemValue="TO"/>
-                                    </p:selectOneMenu>
-                                </p:panelGrid>
-                            </p:panel>
-                        </p:panelGrid>
-
-                        <p:commandButton value="Salvar" ajax="false"  oncomplete="PF('dialog').show()" update=":form1,:tabelaUsuarios" action="#{usuarioMB.cadastrarUsuario()}"/>
-                        <p:commandButton value="Alterar" ajax="false" oncomplete="PF('dialog').show()" update=":form1,:tabelaUsuarios" action="#{usuarioMB.alterarUsuario()}"/>
-                        <p:commandButton value="Excluir" ajax="false" oncomplete="PF('dialog').show()" update=":form1,:tabelaUsuarios" action="#{usuarioMB.excluirUsuario()}"/>
+                <h:form id="mensagem" rendered="#{usuarioMB.showPainelM}">
+                    <div align="center">
+                        <p:panel>
+                            <h:outputText value="CPF inválido!" rendered="#{usuarioMB.cpfInvalido}"/>
+                            <h:outputText value="CPF já cadastrado!" rendered="#{usuarioMB.cpfCadastrado}"/>
+                            <h:outputText value="Usuário cadastrado com sucesso!" rendered="#{usuarioMB.usuarioSucesso}"/>
+                            <h:outputText value="Usuário alterado com sucesso!" rendered="#{usuarioMB.usuarioAlterado}"/>
+                            <h:outputText value="Usuário excluído com sucesso!" rendered="#{usuarioMB.usuarioExcluido}"/>
+                            <br/>
+                            <p:commandButton value="ok" ajax="false" action="#{usuarioMB.esconderPainelMensagem()}"/>
+                        </p:panel>
                     </div>
-                </p:panel>
+                </h:form>
+                <h:form id="formCadas">
+                    <p:panel id="cadastrarCliente" header="Cadastrar Usuário">
+                        <div align="center" >
+                            <p:panelGrid columns="2" class="semBorda">
+                                <p:panel id="pessoais" header="Dados Pessoais" >
+                                    <h:inputHidden value="#{usuarioMB.usuario.id}"/>
+                                    <p:panelGrid  columns="3" styleClass="semBorda"> 
+                                        Nome *: <p:inputText id="nomeUser" value="#{usuarioMB.usuario.nome}" required="true" requiredMessage="Nome Obrigatório"/> <p:message for="nomeUser"/>
+                                        CPF *: <p:inputMask id="cpfUser" mask="999.999.999-99" value="#{usuarioMB.usuario.cpf}" required="true"  requiredMessage="CPF Obrigatório"/> <p:message for="cpfUser"/>
+                                        RG *: <p:inputMask id="rgUser" value="#{usuarioMB.usuario.rg}" required="true" requiredMessage="RG Obrigatório" mask="999999999"/> <p:message for="rgUser"/>
+                                        Email *: <p:inputText id="emailUser" value="#{usuarioMB.usuario.email}" required="true" requiredMessage="Email Obrigatório"/><p:message for="emailUser"/>
+                                        Prioridade: <p:selectOneMenu id="prioridade" value="#{usuarioMB.prioridade}" effect="fade">
+                                            <f:selectItem itemLabel= "Cliente" itemValue="Cliente"/>
+                                            <f:selectItem itemLabel= "Funcionario" itemValue="Funcionario"/>
+                                            <f:selectItem itemLabel= "Administrador" itemValue="Administrador"/>
+                                        </p:selectOneMenu>
+                                    </p:panelGrid>
+                                </p:panel>
+                                <p:panel id="endereco" header="Endereço">
+                                    <h:inputHidden value="#{usuarioMB.endereco.id}"/>
+                                    <p:panelGrid  columns="3" styleClass="semBorda">
+                                        Logradouro: <p:inputText id="logra" value="#{usuarioMB.endereco.logradouro}" required="true" requiredMessage="Logradouro Obrigatório"/> <p:message for="logra"/>
+                                        Número: <p:inputText id="number" value="#{usuarioMB.endereco.numero}" required="true" requiredMessage="Número Obrigatório"/> <p:message for="number"/>
+                                        Cidade: <p:inputText id="city" value="#{usuarioMB.endereco.cidade}" required="true" requiredMessage="Cidade Obrigatório"/> <p:message for="city"/>
+                                        CEP: <p:inputMask id="cep" mask="99.999-999" value="#{usuarioMB.endereco.cep}" required="true" requiredMessage="CEP Obrigatório"/> <p:message for="cep"/>
+                                        UF: <p:selectOneMenu id="ufUsuario" value="#{usuarioMB.endereco.uf}" effect="fade">
+                                            <f:selectItem itemLabel= "AC" itemValue="AC"/>
+                                            <f:selectItem itemLabel= "AL" itemValue="AL"/>
+                                            <f:selectItem itemLabel= "AM" itemValue="AM"/>
+                                            <f:selectItem itemLabel= "AP" itemValue="AP"/>
+                                            <f:selectItem itemLabel= "BA" itemValue="BA"/>
+                                            <f:selectItem itemLabel= "CE" itemValue="CE"/>
+                                            <f:selectItem itemLabel= "DF" itemValue="DF"/>
+                                            <f:selectItem itemLabel= "ES" itemValue="ES"/>
+                                            <f:selectItem itemLabel= "GO" itemValue="GO"/>
+                                            <f:selectItem itemLabel= "MA" itemValue="MA"/>
+                                            <f:selectItem itemLabel= "MG" itemValue="MG"/>
+                                            <f:selectItem itemLabel= "MT" itemValue="MT"/>
+                                            <f:selectItem itemLabel= "MS" itemValue="MS"/>
+                                            <f:selectItem itemLabel= "PA" itemValue="PA"/>
+                                            <f:selectItem itemLabel= "PB" itemValue="PB"/>
+                                            <f:selectItem itemLabel= "PE" itemValue="PE"/>
+                                            <f:selectItem itemLabel= "PI" itemValue="PI"/>
+                                            <f:selectItem itemLabel= "PR" itemValue="PR"/>
+                                            <f:selectItem itemLabel= "RN" itemValue="RN"/>
+                                            <f:selectItem itemLabel= "RJ" itemValue="RJ"/>
+                                            <f:selectItem itemLabel= "RO" itemValue="RO"/>
+                                            <f:selectItem itemLabel= "RR" itemValue="RR"/>
+                                            <f:selectItem itemLabel= "RS" itemValue="RS"/>
+                                            <f:selectItem itemLabel= "SC" itemValue="SC"/>
+                                            <f:selectItem itemLabel= "SE" itemValue="SE"/>
+                                            <f:selectItem itemLabel= "SP" itemValue="SP"/>
+                                            <f:selectItem itemLabel= "TO" itemValue="TO"/>
+                                        </p:selectOneMenu>
+                                    </p:panelGrid>
+                                </p:panel>
+                            </p:panelGrid>
+                            <p:commandButton value="Salvar" ajax="false"  update=":form1,:tabelaUsuarios" action="#{usuarioMB.cadastrarUsuario()}"/>
+                            <p:commandButton value="Alterar" ajax="false" update=":form1,:tabelaUsuarios" action="#{usuarioMB.alterarUsuario()}"/>
+                            <p:commandButton value="Excluir" ajax="false" update=":form1,:tabelaUsuarios" action="#{usuarioMB.excluirUsuario()}"/>
+                            
+                        </div>
+                    </p:panel>
+                    <br/>
+                </h:form>
+                <h:form id="botoes">
+                        <center>
+                            <p:commandButton value="Limpar" ajax="false"  update="form1" action="/faces/cadastrarUsuario.xhtml"/>
+                        </center>
+                    </h:form>
+                <br/>
                 <p:dataTable id="tabelaUsuarios" value="#{usuarioMB.usuarios}" emptyMessage="Não há registros" var="usuario" paginator="true" rows="5"
                              selectionMode="single" rowKey="#{usuario.id}">
+                    <f:facet name="header">
+                        <h:outputText value="Usuários(as) cadastrados(as)"/>
+                    </f:facet>
                     <p:column headerText="Nome" filterBy="#{usuario.nome}" filterMatchMode="contains"> 
                         <h:outputText value="#{usuario.nome}"/> 
                     </p:column> 
@@ -86,7 +110,7 @@
                     <p:column headerText="E-mail" filterBy="#{usuario.email}" filterMatchMode="contains"> 
                         <h:outputText value="#{usuario.email}"/> 
                     </p:column>
-                    <p:ajax event="rowSelect" update=":form1:cadastrarCliente" listener="#{usuarioMB.onRowSelect}"/>
+                    <p:ajax event="rowSelect" update=":form1:formCadas:cadastrarCliente" listener="#{usuarioMB.onRowSelect}"/>
                 </p:dataTable> 
 
             </h:form>

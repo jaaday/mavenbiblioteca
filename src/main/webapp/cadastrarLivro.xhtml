@@ -13,7 +13,7 @@
             <h:form id="form3">
                 <p:growl id="growl3" showDetail="true" sticky="false" life="3000"/>
                 <p:panel id="cadastrarLivro" header="Cadastrar Acervo">
-                    <p:panel id="dadoslivros" header="Dados do Livro">
+                    <p:panel id="dadoslivros" header="Dados do Material">
                         <h:inputHidden value="#{livroMB.livro.id}"/>
                         <p:panelGrid  columns="2" styleClass="semBorda">
                             Titulo: <p:inputText value="#{livroMB.livro.titulo}" required="true" requiredMessage="Campo Titulo Obrigatório"/>
@@ -34,14 +34,19 @@
                             </p:selectOneMenu>
                         </p:panelGrid>
                     </p:panel>
+                    <br/>
                     <div align="center">
                         <p:commandButton value="Salvar" ajax="false" oncomplete="PF('dialog').show()" update="form3" action="#{livroMB.novoLivro()}"/>
                         <p:commandButton value="Alterar" ajax="false" oncomplete="PF('dialog').show()" update="form3" action="#{livroMB.alterarLivro()}"/>
                         <p:commandButton value="Excluir" ajax="false" oncomplete="PF('dialog').show()" update="form3" action="#{livroMB.excluirLivro()}"/>
                     </div>
                 </p:panel>
+                <br/>
                 <p:dataTable id="tabelaLivros" value="#{livroMB.livros}" emptyMessage="Não há registros" var="livro" paginator="true" rows="5"
-                             selectionMode="single" rowKey="#{livro.id}"> 
+                             selectionMode="single" rowKey="#{livro.id}">
+                    <f:facet name="header">
+                        <h:outputText value="Acervo cadastrado"/>
+                    </f:facet>
                     <p:column headerText="Id"> 
                         <h:outputText value="#{livro.id}"/> 
                     </p:column> 
