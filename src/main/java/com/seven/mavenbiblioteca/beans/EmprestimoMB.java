@@ -6,9 +6,14 @@ import com.seven.mavenbiblioteca.logica.LogicaUsusario;
 import com.seven.mavenbiblioteca.modelo.Emprestimo;
 import com.seven.mavenbiblioteca.modelo.Livro;
 import com.seven.mavenbiblioteca.modelo.Usuario;
+import java.io.IOException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.RequestScoped;
@@ -26,7 +31,9 @@ public class EmprestimoMB {
     private Usuario usuario;
     private Livro livro;
     private List<Livro> livrosDiponiveis;
+    private List<Emprestimo> emprestimosAbertos;
     private final FacesContext context;
+    private String descricao = "nulo"; 
 
     public EmprestimoMB() {
         usuario = new Usuario();
@@ -76,7 +83,9 @@ public class EmprestimoMB {
                     context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_WARN, "Atenção", "Usuário atingiu o limite de emprestimos"));
                 }
             } else {
-                context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_WARN, "Atenção", "Usuário está punido até" + usuario.getData_punicao()));
+                SimpleDateFormat formato = new SimpleDateFormat("dd/MM/yyyy");     
+                String data = formato.format(usuario.getData_punicao());
+                context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_WARN, "Atenção", "Usuário está punido até " + data));
             }
         } else {
             context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Erro", "CPF não cadastrado ou CPF Inválido!"));
@@ -94,6 +103,12 @@ public class EmprestimoMB {
 
     public void onRowSelect(SelectEvent event) {
         this.livro = (Livro) event.getObject();
+    }
+    
+    public void onRowSelectEmp(SelectEvent event) {
+        this.emprestimo = (Emprestimo) event.getObject();
+        this.livro = emprestimo.getLivro();
+        this.usuario = emprestimo.getUsuario();
     }
 
     /**
@@ -151,4 +166,49 @@ public class EmprestimoMB {
     public void setLivrosDiponiveis(List<Livro> livrosDiponiveis) {
         this.livrosDiponiveis = livrosDiponiveis;
     }
+    
+    public void setEmprestimosAbertos(List<Emprestimo> emprestimosAbertos) {
+        this.emprestimosAbertos = emprestimosAbertos;
+    }
+    
+    public List<Emprestimo> getEmprestimosAbertos() {
+        return logicaEmprestimo.emprestimosAbertos();
+    }
+    
+    public void realizarDevolucao(Emprestimo emp){
+        
+           
+           emp.setData_devolucao(new Date());
+      
+           //emp.setLivro(livro);
+           //emp.setUsuario(usuario);  
+     
+           if(logicaEmprestimo.verificarAtraso(emp) == false){
+                int aux = logicaEmprestimo.DiferencaEntreDatas(emp.getData_devolucao(), emp.getData_presvista_devolucao());
+                aux = aux * 2;
+                //context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "At ", "Entroufuncao"));
+                if(emp.getUsuario().getData_punicao().after(new Date())){
+                     emp.getUsuario().setData_punicao(somarData(aux, emp.getUsuario().getData_punicao()));
+                     //context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "At ", "EntrouTeste"));
+                }
+                else{
+                    emp.getUsuario().setData_punicao(somarData(aux, emp.getData_devolucao()));
+                    //context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "At ", "EntrouTeste2"));
+                }
+                logicaUsuario.alterarUsuario(emp.getUsuario());
+                context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Atenção ", "Usuário "+emp.getUsuario().getNome()+ " foi punido em " +aux+ " dias."));       
+           }
+           logicaEmprestimo.realizarDevolucao(emp);
+           context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Sucesso ", "Livro devolvido"));
+    }
+
+    public void setDescricao(String descricao) {
+        this.descricao = descricao;
+    }
+
+    public String getDescricao() {
+        return descricao;
+    }
+
+       
 }
