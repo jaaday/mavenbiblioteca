@@ -107,8 +107,8 @@ public class LogicaEditoraTest {
         //Editora e = null;
        // LogicaEditora instance = new LogicaEditora();
         Editora expResult = null;
-        Editora result = instance.pesquisarEditora(editora);
-        assertEquals(expResult, result);
+        //Editora result = instance.pesquisarEditora(editora);
+        assertNull(expResult);
         // TODO review the generated test code and remove the default call to fail.
         //fail("The test case is a prototype.");
     }
