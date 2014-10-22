@@ -3,7 +3,8 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:h="http://xmlns.jcp.org/jsf/html"
       xmlns:p="http://primefaces.org/ui"
-      xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
     <h:head>
         <title>Facelet Title</title>
     </h:head>
@@ -20,12 +21,17 @@
                             <h:inputHidden id="id_livro" value="#{emprestimoMB.livro.id}" required="true" requiredMessage="Campo Titulo do Livro Obrigatório"/>
                         </p:panelGrid>
                     </p:panel>
+                    <br/>
                     <div align="center">
                         <p:commandButton value="Salvar" ajax="false" oncomplete="PF('dialog').show()" update="form4" action="#{emprestimoMB.novoEmprestimo()}"/>
                     </div>
                 </p:panel>
+                <br/>
                 <p:dataTable id="tabelaLivrosDisponiveis" value="#{emprestimoMB.livrosDiponiveis}" emptyMessage="Não há registros" var="livro" paginator="true" rows="5"
                              selectionMode="single" rowKey="#{livro.id}"> 
+                    <f:facet name="header">
+                        <h:outputText value="Acervo disponível para empréstimo"/>
+                    </f:facet>
                     <p:column headerText="Id"> 
                         <h:outputText value="#{livro.id}"/> 
                     </p:column> 

@@ -4,12 +4,12 @@ import com.seven.mavenbiblioteca.logica.LogicaUsusario;
 import com.seven.mavenbiblioteca.modelo.Endereco;
 import com.seven.mavenbiblioteca.modelo.Usuario;
 import java.io.IOException;
+import static java.lang.System.exit;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.faces.application.FacesMessage;
 import javax.faces.application.NavigationHandler;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.RequestScoped;
@@ -25,9 +25,17 @@ public class UsuarioMB {
     private String prioridade;
     private List usuarios;
     private Boolean but;
+    private Boolean cpfCadastrado;
+    private boolean cpfInvalido;
     private final LogicaUsusario logicaU;
     private final FacesContext context;
-
+    
+    private boolean usuarioSucesso;
+    private boolean usuarioAlterado;
+    private boolean usuarioExcluido;
+    
+    private boolean showPainelM = false;
+    
     public UsuarioMB() {
         usuario = new Usuario();
         endereco = new Endereco();
@@ -35,6 +43,7 @@ public class UsuarioMB {
         usuarios = logicaU.listarUsuario();
         but = false;
         context = FacesContext.getCurrentInstance();
+        
     }
 
     public void cadastrarUsuario() {
@@ -44,15 +53,28 @@ public class UsuarioMB {
             usuario.setEndereco(endereco);
             usuario.setData_punicao(new Date(1969 - 12 - 31));
             usuario.setPrioridade(logicaU.convertPrioridade(prioridade));
-            logicaU.novoUsuario(usuario);
-            usuario = new Usuario();
-            endereco = new Endereco();
+            
+            if(logicaU.validarCPF(usuario.getCpf()))
+            {
+                logicaU.novoUsuario(usuario);
+                usuario = new Usuario();
+                endereco = new Endereco();
+                setUsuarioSucesso(true);
+            }
+            else
+            {
+                setCpfInvalido(true);
+            }
             usuarios = logicaU.listarUsuario();
 
-            context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Sucesso", "Usuário cadastrado!"));
+            //context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Sucesso", "Usuário cadastrado!"));
+            
         } else {
-            context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Erro", "CPF cadastrado ou CPF Inválido!"));
+            //context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Erro", "CPF cadastrado ou CPF Inválido!"));
+            setCpfCadastrado(true);
+            //mostrarPainelMensagem();
         }
+        mostrarPainelMensagem();
     }
 
     public void pesquisarUsuario() {
@@ -80,29 +102,30 @@ public class UsuarioMB {
         usuario.setEndereco(endereco);
         usuario.setPrioridade(logicaU.convertPrioridade(prioridade));
         logicaU.alterarUsuario(usuario);
+        
+        setUsuarioAlterado(true);
+        mostrarPainelMensagem();
 
         usuario = new Usuario();
         endereco = new Endereco();
-        but = false;
-
+        but = false;     
         
-        try {
-            context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Sucesso", "Usuário alterado!"));
-            FacesContext.getCurrentInstance().getExternalContext().redirect("cadastrarUsuario.xhtml"); 
-        } catch (IOException ex) {
-            Logger.getLogger(UsuarioMB.class.getName()).log(Level.SEVERE, null, ex);
-        }
-
     }
 
     public void excluirUsuario() {
-        usuario.setEndereco(endereco);
-        logicaU.excluirUsuario(usuario);
-        but = false;
-        usuario = new Usuario();
-        endereco = new Endereco();
+        try{
+            usuario.setEndereco(endereco);
+            logicaU.excluirUsuario(usuario);
+            but = false;
+            setUsuarioExcluido(true);
+            mostrarPainelMensagem();
+            usuario = new Usuario();
+            endereco = new Endereco();
+        }catch(Exception e){
+            
+        }
 
-        context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Sucesso", "Usuário excluido!"));
+        //context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Sucesso", "Usuário excluido!"));
     }
 
     public void onRowSelect(SelectEvent event) {
@@ -180,6 +203,111 @@ public class UsuarioMB {
      */
     public void setBut(Boolean but) {
         this.but = but;
+    }
+
+    /**
+     * @return the cpfCadastrado
+     */
+    public Boolean getCpfCadastrado() {
+        return cpfCadastrado;
+    }
+
+    /**
+     * @param cpfCadastrado the cpfCadastrado to set
+     */
+    public void setCpfCadastrado(Boolean cpfCadastrado) {
+        this.cpfCadastrado = cpfCadastrado;
+    }
+
+    /**
+     * @return the showPainel
+     */
+    public boolean isShowPainelM() {
+        return showPainelM;
+    }
+
+    /**
+     * @param showPainel the showPainel to set
+     */
+    public void setShowPainelM(boolean showPainel) {
+        this.showPainelM = showPainel;
+    }
+
+    
+    public void mostrarPainelMensagem()
+    {
+        setShowPainelM(true);
+    }
+    
+    public void esconderPainelMensagem()
+    {
+        setShowPainelM(false);
+        //exit(1);
+    }
+
+    /**
+     * @return the cpfInvalido
+     */
+    public boolean isCpfInvalido() {
+        return cpfInvalido;
+    }
+
+    /**
+     * @param cpfInvalido the cpfInvalido to set
+     */
+    public void setCpfInvalido(boolean cpfInvalido) {
+        this.cpfInvalido = cpfInvalido;
+    }
+
+    /**
+     * @return the usuarioSucesso
+     */
+    public boolean isUsuarioSucesso() {
+        return usuarioSucesso;
+    }
+
+    /**
+     * @param usuarioSucesso the usuarioSucesso to set
+     */
+    public void setUsuarioSucesso(boolean usuarioSucesso) {
+        this.usuarioSucesso = usuarioSucesso;
+    }
+
+    /**
+     * @return the usuarioAlterado
+     */
+    public boolean isUsuarioAlterado() {
+        return usuarioAlterado;
+    }
+
+    /**
+     * @param usuarioAlterado the usuarioAlterado to set
+     */
+    public void setUsuarioAlterado(boolean usuarioAlterado) {
+        this.usuarioAlterado = usuarioAlterado;
+    }
+
+    /**
+     * @return the usuarioExcluido
+     */
+    public boolean isUsuarioExcluido() {
+        return usuarioExcluido;
+    }
+
+    /**
+     * @param usuarioExcluido the usuarioExcluido to set
+     */
+    public void setUsuarioExcluido(boolean usuarioExcluido) {
+        this.usuarioExcluido = usuarioExcluido;
+    }
+    
+    public void limparCampos()
+    {
+        setUsuario(new Usuario());
+        setEndereco(new Endereco());
+        //NavigationHandler navigationHandler = FacesContext.getCurrentInstance().getApplication().getNavigationHandler();
+          //  navigationHandler.handleNavigation(FacesContext.getCurrentInstance(), null, "cadastarUsuario");
+        
     }
 
 }
