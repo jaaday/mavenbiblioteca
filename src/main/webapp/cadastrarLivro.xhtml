@@ -11,23 +11,37 @@
     <ui:decorate template="/tema/padrao.xhtml">
         <ui:define  name="centro">
             <h:form id="form3">
-                <p:growl id="growl3" showDetail="true" sticky="false" life="3000"/>
+                <!--p:growl id="growl3" showDetail="true" sticky="false" life="3000"/-->                
+                <h:form id="mensagemLivro" rendered="#{livroMB.mostrarPainelMaterial}">
+                    <div align="center">
+                        <p:panel>
+                            <h:outputText value="Material cadastrado com sucesso!" rendered="#{livroMB.materialSucesso}"/>
+                            <h:outputText value="Material alterado com sucesso!" rendered="#{livroMB.materialAletrado}"/>
+                            <h:outputText value="Material excluído com sucesso!" rendered="#{livroMB.materialExcluido}"/>
+                            <h:outputText value="Cadastre uma editora antes de cadastrar o material!" rendered="#{livroMB.terEditoraCadastrada}"/>
+                            <br/>
+                            <br/>
+                            <p:commandButton value="OK" ajax="false" action="#{livroMB.esconderPainelMaterial()}"/>
+                        </p:panel>
+                    </div>
+                </h:form>
+                <h:form id="formCadMat">
                 <p:panel id="cadastrarLivro" header="Cadastrar Acervo">
                     <p:panel id="dadoslivros" header="Dados do Material">
                         <h:inputHidden value="#{livroMB.livro.id}"/>
-                        <p:panelGrid  columns="2" styleClass="semBorda">
-                            Titulo: <p:inputText value="#{livroMB.livro.titulo}" required="true" requiredMessage="Campo Titulo Obrigatório"/>
-                            ISBN: <p:inputText value="#{livroMB.livro.isbn}" required="true" requiredMessage="Campo ISBN Obrigatório" />
-                            Área de Conhecimento: <p:inputText value="#{livroMB.livro.area_conhecimento}" required="true" requiredMessage="Campo Área de Conhecimento Obrigatório" />
+                        <p:panelGrid  columns="3" styleClass="semBorda">
+                            Titulo: <p:inputText id="tituloLivro" value="#{livroMB.livro.titulo}" required="true" requiredMessage="Titulo Obrigatório"/><p:message for="tituloLivro"/>
+                            ISBN: <p:inputText id="isbnLivro" value="#{livroMB.livro.isbn}" required="true" requiredMessage="ISBN Obrigatório" /><p:message for="isbnLivro"/>
+                            Área de Conhecimento: <p:inputText id="conhecimento" value="#{livroMB.livro.area_conhecimento}" required="true" requiredMessage="Área de Conhecimento Obrigatório" /><p:message for="conhecimento"/>
                             Categoria: <p:selectOneMenu id="prioridade" value="#{livroMB.livro.categoria}" effect="fade">
                                 <f:selectItem itemLabel= "Livro" itemValue="Livro"/>
                                 <f:selectItem itemLabel= "Artigo" itemValue="Artigo"/>
                                 <f:selectItem itemLabel= "TCC/Monografia" itemValue="TCC/Monografia"/>
-                            </p:selectOneMenu>
-                            Autor: <p:inputText value="#{livroMB.livro.autor}" required="true" requiredMessage="Campo Autor Obrigatório"/>
-                            Ano de Lançamento: <p:inputMask mask="9999" value="#{livroMB.livro.ano_lancamento}" required="true" requiredMessage="Campo Ano de Lançamento Obrigatório"/>
+                            </p:selectOneMenu><p:message for="prioridade"/>
+                            Autor: <p:inputText id="autorLivro" value="#{livroMB.livro.autor}" required="true" requiredMessage="Autor Obrigatório"/><p:message for="autorLivro"/>
+                            Ano de Lançamento: <p:inputMask id="lancamento" mask="9999" value="#{livroMB.livro.ano_lancamento}" required="true" requiredMessage="Ano de Lançamento Obrigatório"/><p:message for="lancamento"/>
                             <h:outputLabel for="basic" value="Quantidade de Exemplar: " />
-                            <p:spinner id="basic" value="#{livroMB.numero}" min="1"/>
+                            <p:spinner id="basic" value="#{livroMB.numero}" min="1"/><p:message for="basic"/>
                             <p:outputLabel for="editora" value="Editora: " />
                             <p:selectOneMenu id="editora" value="#{livroMB.editora}" effect="fade" converter="editora">
                                 <f:selectItems value="#{livroMB.editoras}" var="editora" itemLabel="#{editora.nome}" itemValue="#{editora}" />
@@ -36,11 +50,18 @@
                     </p:panel>
                     <br/>
                     <div align="center">
-                        <p:commandButton value="Salvar" ajax="false" oncomplete="PF('dialog').show()" update="form3" action="#{livroMB.novoLivro()}"/>
-                        <p:commandButton value="Alterar" ajax="false" oncomplete="PF('dialog').show()" update="form3" action="#{livroMB.alterarLivro()}"/>
-                        <p:commandButton value="Excluir" ajax="false" oncomplete="PF('dialog').show()" update="form3" action="#{livroMB.excluirLivro()}"/>
+                        <p:commandButton value="Salvar" ajax="false" update=":form3, :tabelaLivros" action="#{livroMB.novoLivro()}"/>
+                        <p:commandButton value="Alterar" ajax="false" update=":form3, :tabelaLivros" action="#{livroMB.alterarLivro()}"/>
+                        <p:commandButton value="Excluir" ajax="false" update=":form3, :tabelaLivros" action="#{livroMB.excluirLivro()}"/>
                     </div>
                 </p:panel>
+                </h:form>
+                <br/>
+                <h:form id="botoes">
+                    <center>
+                        <p:commandButton value="Limpar" ajax="false" action="#{livroMB.limparCampos()}"/>
+                    </center>
+                </h:form>
                 <br/>
                 <p:dataTable id="tabelaLivros" value="#{livroMB.livros}" emptyMessage="Não há registros" var="livro" paginator="true" rows="5"
                              selectionMode="single" rowKey="#{livro.id}">
@@ -62,7 +83,7 @@
                     <p:column headerText="Área de Conhecimento" filterBy="#{livro.area_conhecimento}" filterMatchMode="contains"> 
                         <h:outputText value="#{livro.area_conhecimento}"/> 
                     </p:column>
-                    <p:ajax event="rowSelect" update=":form3:cadastrarLivro" listener="#{livroMB.onRowSelect}"/>
+                    <p:ajax event="rowSelect" update=":form3:formCadMat:cadastrarLivro" listener="#{livroMB.onRowSelect}"/>
                 </p:dataTable> 
             </h:form>
         </ui:define>
