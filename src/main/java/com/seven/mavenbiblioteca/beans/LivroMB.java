@@ -26,6 +26,12 @@ public class LivroMB {
     private int numero;
     private Long id;
     private final FacesContext context;
+    
+    private boolean mostrarPainelMaterial = false;
+    private boolean materialSucesso = false;
+    private boolean materialAletrado = false;
+    private boolean materialExcluido = false;
+    private boolean terEditoraCadastrada = false;
 
     public LivroMB() {
         editora = new Editora();
@@ -36,56 +42,63 @@ public class LivroMB {
     }
 
     public void novoLivro() {
-        if (editora!=null) {
-            livro.setEditora(editora);
+        if (getEditora()!=null) {
+            getLivro().setEditora(getEditora());
             for (int i = 0; i < numero; i++) {
-                livro.setId(null);
-                logicaLivro.novoLivro(livro);
+                getLivro().setId(null);
+                logicaLivro.novoLivro(getLivro());
             }
-            livro = new Livro();
-            editora = new Editora();
+            setLivro(new Livro());
+            setEditora(new Editora());
             livros = logicaLivro.listarLivros();
             
-            context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Sucesso", "Livro cadastrado!"));
+            //context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Sucesso", "Livro cadastrado!"));
+            setMaterialSucesso(true);
         }else{
-            context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Erro", "Cadastrar primeiro uma Editora"));
+            //context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Erro", "Cadastrar primeiro uma Editora"));
+            setTerEditoraCadastrada(true);
         }
+        mostrarPainelMaterial();
     }
 
     public void pesquisarLivro() {
-        livro = logicaLivro.pesqLivroID(id);
+        setLivro(logicaLivro.pesqLivroID(id));
 
-        if (livro == null) {
+        if (getLivro() == null) {
             try {
                 FacesContext.getCurrentInstance().getExternalContext().redirect("index.xhtml");
             } catch (IOException ex) {
                 Logger.getLogger(LivroMB.class.getName()).log(Level.SEVERE, null, ex);
             }
         } else {
-            editora = livro.getEditora();
+            setEditora(getLivro().getEditora());
             NavigationHandler navigationHandler = FacesContext.getCurrentInstance().getApplication().getNavigationHandler();
             navigationHandler.handleNavigation(FacesContext.getCurrentInstance(), null, "mostrarLivro");
         }
     }
 
     public void alterarLivro() {
-        livro.setEditora(editora);
-        logicaLivro.alterarLivro(livro);
-        try {
+        getLivro().setEditora(getEditora());
+        logicaLivro.alterarLivro(getLivro());
+        /*try {
             FacesContext.getCurrentInstance().getExternalContext().redirect("cadastrarLivro.xhtml");
         } catch (IOException ex) {
             Logger.getLogger(LivroMB.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        }*/
+        setMaterialAletrado(true);
+        mostrarPainelMaterial();
     }
 
     public void excluirLivro() {
-        livro.setEditora(editora);
-        logicaLivro.excluirLivor(livro);
-        try {
+        getLivro().setEditora(getEditora());
+        logicaLivro.excluirLivor(getLivro());
+        /*try {
             FacesContext.getCurrentInstance().getExternalContext().redirect("cadastrarLivro.xhtml");
         } catch (IOException ex) {
             Logger.getLogger(LivroMB.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        }*/
+        setMaterialExcluido(true);
+        mostrarPainelMaterial();
     }
 
     public List<Editora> getEditoras() {
@@ -93,8 +106,8 @@ public class LivroMB {
     }
 
     public void onRowSelect(SelectEvent event) {
-        this.livro = (Livro) event.getObject();
-        this.editora = livro.getEditora();
+        this.setLivro((Livro) event.getObject());
+        this.setEditora(getLivro().getEditora());
     }
 
     /**
@@ -159,5 +172,61 @@ public class LivroMB {
 
     public void setLivros(ArrayList<Livro> livros) {
         this.livros = livros;
+    }
+
+    public boolean isMostrarPainelMaterial() {
+        return mostrarPainelMaterial;
+    }
+
+    public void setMostrarPainelMaterial(boolean mostrarPainelMaterial) {
+        this.mostrarPainelMaterial = mostrarPainelMaterial;
+    }
+
+    public boolean isMaterialSucesso() {
+        return materialSucesso;
+    }
+
+    public void setMaterialSucesso(boolean materialSucesso) {
+        this.materialSucesso = materialSucesso;
+    }
+
+    public boolean isMaterialAletrado() {
+        return materialAletrado;
+    }
+
+    public void setMaterialAletrado(boolean materialAletrado) {
+        this.materialAletrado = materialAletrado;
+    }
+
+    public boolean isMaterialExcluido() {
+        return materialExcluido;
+    }
+
+    public void setMaterialExcluido(boolean materialExcluido) {
+        this.materialExcluido = materialExcluido;
+    }
+
+    public boolean isTerEditoraCadastrada() {
+        return terEditoraCadastrada;
+    }
+
+    public void setTerEditoraCadastrada(boolean terEditoraCadastrada) {
+        this.terEditoraCadastrada = terEditoraCadastrada;
+    }
+    
+    public void mostrarPainelMaterial()
+    {
+        setMostrarPainelMaterial(true);
+    }
+    
+    public void esconderPainelMaterial()
+    {
+        setMostrarPainelMaterial(false);
+    }
+    
+    public void limparCampos()
+    {
+        setLivro(new Livro());
+        setEditora(new Editora());
     }
 }

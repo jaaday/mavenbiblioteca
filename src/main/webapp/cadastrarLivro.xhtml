@@ -11,11 +11,20 @@
     <ui:decorate template="/tema/padrao.xhtml">
         <ui:define  name="centro">
             <h:form id="form3">
-                <!--p:growl id="growl3" showDetail="true" sticky="false" life="3000"/>
-                
-                <h:form id="mensagemLivro">
-                    
-                </h:form-->
+                <!--p:growl id="growl3" showDetail="true" sticky="false" life="3000"/-->                
+                <h:form id="mensagemLivro" rendered="#{livroMB.mostrarPainelMaterial}">
+                    <div align="center">
+                        <p:panel>
+                            <h:outputText value="Material cadastrado com sucesso!" rendered="#{livroMB.materialSucesso}"/>
+                            <h:outputText value="Material alterado com sucesso!" rendered="#{livroMB.materialAletrado}"/>
+                            <h:outputText value="Material excluído com sucesso!" rendered="#{livroMB.materialExcluido}"/>
+                            <h:outputText value="Cadastre uma editora antes de cadastrar o material!" rendered="#{livroMB.terEditoraCadastrada}"/>
+                            <br/>
+                            <br/>
+                            <p:commandButton value="OK" ajax="false" action="#{livroMB.esconderPainelMaterial()}"/>
+                        </p:panel>
+                    </div>
+                </h:form>
                 <h:form id="formCadMat">
                 <p:panel id="cadastrarLivro" header="Cadastrar Acervo">
                     <p:panel id="dadoslivros" header="Dados do Material">
@@ -42,10 +51,16 @@
                     <br/>
                     <div align="center">
                         <p:commandButton value="Salvar" ajax="false" update=":form3, :tabelaLivros" action="#{livroMB.novoLivro()}"/>
-                        <p:commandButton value="Alterar" ajax="false" update=":form3, tabelaLivros" action="#{livroMB.alterarLivro()}"/>
+                        <p:commandButton value="Alterar" ajax="false" update=":form3, :tabelaLivros" action="#{livroMB.alterarLivro()}"/>
                         <p:commandButton value="Excluir" ajax="false" update=":form3, :tabelaLivros" action="#{livroMB.excluirLivro()}"/>
                     </div>
                 </p:panel>
+                </h:form>
+                <br/>
+                <h:form id="botoes">
+                    <center>
+                        <p:commandButton value="Limpar" ajax="false" action="#{livroMB.limparCampos()}"/>
+                    </center>
                 </h:form>
                 <br/>
                 <p:dataTable id="tabelaLivros" value="#{livroMB.livros}" emptyMessage="Não há registros" var="livro" paginator="true" rows="5"
