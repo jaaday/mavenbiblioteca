@@ -24,6 +24,12 @@ public class EditoraMB {
     private final LogicaEditora logicaEditora;
     private List<Editora> editoras;
     private final FacesContext context;
+    
+    private boolean mostrarPainelEditora = false;
+    private boolean editoraSucesso = false;
+    private boolean editoraAlterada = false;
+    private boolean editoraExcluida = false;
+    private boolean editoraCadastrada = false;
 
     public EditoraMB() {
         editora = new Editora();
@@ -34,55 +40,61 @@ public class EditoraMB {
     }
 
     public void novaEditora() {
-        if (logicaEditora.pesquisarEditora(editora) == null) {
-            endereco.setCep(logicaEditora.removerMascara(endereco.getCep()));
-            editora.setEndereco(endereco);
-            logicaEditora.novoEditora(editora);
+        if (logicaEditora.pesquisarEditora(getEditora()) == null) {
+            getEndereco().setCep(logicaEditora.removerMascara(getEndereco().getCep()));
+            getEditora().setEndereco(getEndereco());
+            logicaEditora.novoEditora(getEditora());
             editoras = logicaEditora.listEditoras();
 
-            editora = new Editora();
-            endereco = new Endereco();
+            setEditora(new Editora());
+            setEndereco(new Endereco());
 
-            context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Sucesso", "Editora cadastrada!"));
+            //context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Sucesso", "Editora cadastrada!"));
+            setEditoraSucesso(true);
         } else {
-            context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Erro", "Editora já foi cadastrada"));
+            //context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Erro", "Editora já foi cadastrada"));
+            setEditoraCadastrada(true);
         }
-
+        mostrarPainelEditora();
     }
 
     public void alterarEditora() {
-        endereco.setCep(logicaEditora.removerMascara(endereco.getCep()));
-        editora.setEndereco(endereco);
-        logicaEditora.alterarEditora(editora);
-        editora = new Editora();
-        endereco = new Endereco();
+        getEndereco().setCep(logicaEditora.removerMascara(getEndereco().getCep()));
+        getEditora().setEndereco(getEndereco());
+        logicaEditora.alterarEditora(getEditora());
+        setEditora(new Editora());
+        setEndereco(new Endereco());
+        setEditoraAlterada(true);
+        mostrarPainelEditora();
 
     }
 
     public void excluirEditora() {
-        editora.setEndereco(endereco);
-        logicaEditora.excluirEditora(editora);
-        editora = new Editora();
-        endereco = new Endereco();
+        getEditora().setEndereco(getEndereco());
+        logicaEditora.excluirEditora(getEditora());
+        setEditora(new Editora());
+        setEndereco(new Endereco());
 
-        try {
+        /*try {
             FacesContext.getCurrentInstance().getExternalContext().redirect("cadastrarEditora.xhtml");
         } catch (IOException ex) {
             Logger.getLogger(EditoraMB.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        }*/
+        setEditoraExcluida(true);
+        mostrarPainelEditora();
     }
 
     public void pesquisarEditora() {
-        editora = logicaEditora.pesquisarEditora(editora);
+        setEditora(logicaEditora.pesquisarEditora(getEditora()));
 
-        if ((editora == null)) {
+        if ((getEditora() == null)) {
             try {
                 FacesContext.getCurrentInstance().getExternalContext().redirect("index.xhtml");
             } catch (IOException ex) {
                 Logger.getLogger(EditoraMB.class.getName()).log(Level.SEVERE, null, ex);
             }
         } else {
-            endereco = editora.getEndereco();
+            setEndereco(getEditora().getEndereco());
 
             NavigationHandler navigationHandler = FacesContext.getCurrentInstance().getApplication().getNavigationHandler();
             navigationHandler.handleNavigation(FacesContext.getCurrentInstance(), null, "mostrarEditora");
@@ -90,8 +102,8 @@ public class EditoraMB {
     }
 
     public void onRowSelect(SelectEvent event) {
-        this.editora = (Editora) event.getObject();
-        this.endereco = editora.getEndereco();
+        this.setEditora((Editora) event.getObject());
+        this.setEndereco(getEditora().getEndereco());
     }
     
     /**
@@ -141,6 +153,62 @@ public class EditoraMB {
      */
     public void setEditoras(ArrayList<Editora> editoras) {
         this.editoras = editoras;
+    }
+
+    public boolean isMostrarPainelEditora() {
+        return mostrarPainelEditora;
+    }
+
+    public void setMostrarPainelEditora(boolean mostrarPainelEditora) {
+        this.mostrarPainelEditora = mostrarPainelEditora;
+    }
+
+    public boolean isEditoraSucesso() {
+        return editoraSucesso;
+    }
+
+    public void setEditoraSucesso(boolean editoraSucesso) {
+        this.editoraSucesso = editoraSucesso;
+    }
+
+    public boolean isEditoraAlterada() {
+        return editoraAlterada;
+    }
+
+    public void setEditoraAlterada(boolean editoraAlterada) {
+        this.editoraAlterada = editoraAlterada;
+    }
+
+    public boolean isEditoraExcluida() {
+        return editoraExcluida;
+    }
+
+    public void setEditoraExcluida(boolean editoraExcluida) {
+        this.editoraExcluida = editoraExcluida;
+    }
+
+    public boolean isEditoraCadastrada() {
+        return editoraCadastrada;
+    }
+
+    public void setEditoraCadastrada(boolean editoraCadastrada) {
+        this.editoraCadastrada = editoraCadastrada;
+    }
+    
+    public void limparCampos()
+    {
+        setEditora(new Editora());
+        setEndereco(new Endereco());
+    }
+    
+    public void mostrarPainelEditora()
+    {
+        setMostrarPainelEditora(true);
+    }
+    
+    public void esconderPainelEditora()
+    {
+        setMostrarPainelEditora(false);
     }
 
 }

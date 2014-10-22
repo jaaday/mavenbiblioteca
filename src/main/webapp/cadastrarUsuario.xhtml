@@ -12,7 +12,7 @@
         <ui:define  name="centro">   
             <h:form id="form1">
                 <!--p:growl id="growl1" showDetail="false" sticky="false" life="3000"/-->
-                <h:form id="mensagem" rendered="#{usuarioMB.showPainelM}">
+                <h:form id="mensagemUsuario" rendered="#{usuarioMB.showPainelM}">
                     <div align="center">
                         <p:panel>
                             <h:outputText value="CPF inválido!" rendered="#{usuarioMB.cpfInvalido}"/>
@@ -21,7 +21,8 @@
                             <h:outputText value="Usuário alterado com sucesso!" rendered="#{usuarioMB.usuarioAlterado}"/>
                             <h:outputText value="Usuário excluído com sucesso!" rendered="#{usuarioMB.usuarioExcluido}"/>
                             <br/>
-                            <p:commandButton value="ok" ajax="false" action="#{usuarioMB.esconderPainelMensagem()}"/>
+                            <br/>
+                            <p:commandButton value="OK" ajax="false" action="#{usuarioMB.esconderPainelMensagem()}"/>
                         </p:panel>
                     </div>
                 </h:form>
@@ -92,7 +93,7 @@
                 </h:form>
                 <h:form id="botoes">
                         <center>
-                            <p:commandButton value="Limpar" ajax="false"  update="form1" action="/faces/cadastrarUsuario.xhtml"/>
+                            <p:commandButton value="Limpar" ajax="false"  update="form1" action="#{usuarioMB.limparCampos()}"/>
                         </center>
                     </h:form>
                 <br/>
