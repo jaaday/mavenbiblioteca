@@ -177,10 +177,16 @@ public class EmprestimoMB {
            emp.setData_devolucao(new Date());
            //emp.setLivro(livro);
            //emp.setUsuario(usuario);  
+     
            if(logicaEmprestimo.verificarAtraso(emp) == false){
                 int aux = logicaEmprestimo.DiferencaEntreDatas(emp.getData_devolucao(), emp.getData_presvista_devolucao());
                 aux = aux * 2;
-                emp.getUsuario().setData_punicao(somarData(aux, emp.getData_devolucao()));
+                if(emp.getUsuario().getData_punicao().before(new Date())){
+                     emp.getUsuario().setData_punicao(somarData(aux, emp.getUsuario().getData_punicao()));
+                }
+                else{
+                    emp.getUsuario().setData_punicao(somarData(aux, emp.getData_devolucao()));
+                }
                 logicaUsuario.alterarUsuario(emp.getUsuario());
                 context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Atenção ", "Usuário "+emp.getUsuario().getNome()+ " foi punido em " +aux+ " dias."));       
            }
