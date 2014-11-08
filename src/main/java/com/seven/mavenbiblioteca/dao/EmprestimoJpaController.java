@@ -44,7 +44,7 @@ public class EmprestimoJpaController implements Serializable {
                 
         EntityManager em = getEntityManager();
         try{
-            TypedQuery<Emprestimo> query = (TypedQuery<Emprestimo>) em.createNativeQuery("select * from usuario u, livro l, emprestimo e where e.usuario_id = u.id and e.livro_id = l.id and e.DATA_DEVOLUCAO = '1969-12-31'",Emprestimo.class);
+            TypedQuery<Emprestimo> query = (TypedQuery<Emprestimo>) em.createNativeQuery("select e.* from emprestimo e, usuario u, livro l where e.usuario_id = u.id and e.livro_id = l.id and e.DATA_DEVOLUCAO = '1969-12-31'",Emprestimo.class);
             return query.getResultList();
         }catch (Exception e){
             e.printStackTrace();

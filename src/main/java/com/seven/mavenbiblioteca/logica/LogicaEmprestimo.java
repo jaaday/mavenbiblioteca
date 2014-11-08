@@ -103,7 +103,7 @@ public class LogicaEmprestimo {
     public void realizarDevolucao(Emprestimo emp){
         
         try{
-            daoEmprestimo.destroy(emp.getId());
+            daoEmprestimo.edit(emp);
         }catch (Exception ex) {
             Logger.getLogger(LogicaLivro.class.getName()).log(Level.SEVERE, null, ex);
         }    

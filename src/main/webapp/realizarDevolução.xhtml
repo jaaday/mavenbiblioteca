@@ -20,9 +20,12 @@ and open the template in the editor.
                     <p:growl id="growl3" showDetail="true" sticky="false" life="3000"/>
                 <p:panel id="realizarDevolucao" header="Realizar Devolução">                   
                     <p:panel id="emprestimosAndamentos" header="Empréstimo(s) em andamento">
-                    <p:dataTable id="emprestimosAbertos"  value="#{emprestimoMB.emprestimosAbertos}" emptyMessage="Não há registros" var="emprestimo"  rows="5"
-                                 selectionMode="single" rowKey="#{emprestimo.id}">                        
+                    <p:dataTable id="emprestimosAbertos"  value="#{emprestimoMB.emprestimosAbertos}" emptyMessage="Não há registros" var="emprestimo"  rows="5">
+                                                          
                         <h:inputHidden value="#{emprestimo.id}"/>
+                        <p:column headerText="CPF"> 
+                            <h:outputText  value="#{emprestimo.usuario.cpf}"/> 
+                    </p:column>
                      <p:column headerText="Nome do Usuário"> 
                          <h:outputText  value="#{emprestimo.usuario.nome}"/> 
                     </p:column> 
@@ -35,7 +38,8 @@ and open the template in the editor.
                             </h:outputText>
                     </p:column>                       
                         <p:column >
-                            <p:commandButton value="Devolver" ajax="false" oncomplete="PF('dialog').show()" update="form1" action="#{emprestimoMB.realizarDevolucao(emprestimo)}"/>
+                            <p:commandButton value="Devolver" ajax="false"  oncomplete="PF('dialog').show()" update="form1" action="#{emprestimoMB.realizarDevolucao(emprestimo)}">
+                            </p:commandButton>   
                         </p:column>
                     </p:dataTable>
                        
